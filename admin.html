@@ -11,7 +11,7 @@
 button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:11px;padding:11px 15px;background:var(--red);color:white;font-weight:700}button:disabled{opacity:.55;cursor:wait}.secondary{background:#293348}.danger{background:#7f2632}.success{background:#167b5b}
 .wrap{max-width:1250px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:22px}.brand{font-size:22px;font-weight:900;letter-spacing:.5px}.brand span{color:#ff5868}.muted{color:var(--muted)}.hide{display:none!important}
 .login{width:min(430px,100%);margin:9vh auto;background:var(--panel);border:1px solid var(--line);padding:28px;border-radius:20px;box-shadow:0 24px 80px #0007}.login h1{margin:0 0 8px}.field{display:grid;gap:7px;margin:14px 0}.field label{color:var(--muted);font-size:13px}.field input,.field select,.field textarea,input,select,textarea{width:100%;background:#0d1320;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:12px;outline:none}.field input:focus,.field textarea:focus{border-color:#e24b5b}.error{color:#ff8290;min-height:22px;margin-top:12px;overflow-wrap:anywhere}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.nav button{background:var(--panel2);border:1px solid var(--line)}.nav button.active{background:var(--red);border-color:var(--red)}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.stat,.panel{background:linear-gradient(145deg,#171e2c,#111723);border:1px solid var(--line);border-radius:16px;padding:17px}.stat strong{display:block;font-size:25px;margin-top:7px}.panel{margin-bottom:15px}.panel h2{font-size:18px;margin:0 0 14px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.row button{flex:0 0 auto}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-size:12px;text-transform:uppercase}td{overflow-wrap:anywhere}.pill{display:inline-block;padding:4px 9px;border-radius:20px;background:#283348;font-size:12px}.pill.pending{color:var(--yellow)}.pill.paid{color:var(--green)}.pill.cancelled{color:#ff8290}.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:8px 10px;font-size:12px}.notice{padding:11px 13px;border:1px solid var(--line);border-radius:10px;color:var(--muted);margin:10px 0}.chatbox{height:330px;overflow:auto;background:#0d1320;border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}.msg{padding:9px 11px;border-radius:10px;background:#202b3e;margin:8px 0;max-width:90%;overflow-wrap:anywhere}.msg.seller{margin-left:auto;background:#632b38}.small{font-size:12px;color:var(--muted)}.empty{color:var(--muted);padding:20px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.stat,.panel{background:linear-gradient(145deg,#171e2c,#111723);border:1px solid var(--line);border-radius:16px;padding:17px}.stat strong{display:block;font-size:25px;margin-top:7px}.panel{margin-bottom:15px}.panel h2{font-size:18px;margin:0 0 14px}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.row button{flex:0 0 auto}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-size:12px;text-transform:uppercase}td{overflow-wrap:anywhere}.pill{display:inline-block;padding:4px 9px;border-radius:20px;background:#283348;font-size:12px}.pill.pending{color:var(--yellow)}.pill.paid{color:var(--green)}.pill.cancelled{color:#ff8290}.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:8px 10px;font-size:12px}.notice{padding:11px 13px;border:1px solid var(--line);border-radius:10px;color:var(--muted);margin:10px 0}.chatbox{height:330px;overflow:auto;background:#0d1320;border:1px solid var(--line);border-radius:12px;padding:12px;margin:10px 0}.msg{padding:9px 11px;border-radius:10px;background:#202b3e;margin:8px 0;max-width:90%;overflow-wrap:anywhere}.msg.seller{margin-left:auto;background:#632b38}.chat-layout{display:grid;grid-template-columns:minmax(220px,320px) 1fr;gap:12px}.thread-list{max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:8px}.thread-item{display:block;width:100%;text-align:left;background:#1b2333;border:1px solid var(--line);margin:5px 0;padding:11px;border-radius:10px;overflow:hidden}.thread-item.active{border-color:var(--red);background:#34202a}.thread-preview{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px}.chat-detail{min-width:0}.chat-detail .chatbox{height:390px}.chat-head{font-weight:700;margin:8px 0}.chat-compose{display:flex;gap:8px}.chat-compose input{flex:1;min-width:0}@media(max-width:650px){.chat-layout{grid-template-columns:1fr}.thread-list{max-height:220px}.chat-detail .chatbox{height:300px}}.small{font-size:12px;color:var(--muted)}.empty{color:var(--muted);padding:20px;text-align:center}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding:15px}.top{align-items:flex-start}}@media(max-width:420px){.grid{grid-template-columns:1fr 1fr}.brand{font-size:18px}}
 </style>
 </head>
@@ -39,7 +39,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-
       <div class="panel"><h2>Добавить промокоды</h2><div class="field"><label>Тариф (должен совпадать со значением в базе)</label><input id="codePlan" placeholder="Например: 1 month"></div><div class="field"><label>Коды — каждый с новой строки</label><textarea id="codeList" rows="5" placeholder="HAPP-XXXX-XXXX&#10;HAPP-YYYY-YYYY"></textarea></div><button id="addCodes">Добавить коды</button><div id="codeMessage" class="error"></div></div>
       <div class="panel"><div class="row"><h2>Запас промокодов</h2><button class="secondary" id="refreshStock">Обновить</button></div><div class="table-wrap"><table><thead><tr><th>Тариф</th><th>Всего</th><th>Использовано</th><th>Свободно</th></tr></thead><tbody id="stockBody"></tbody></table></div></div>
     </section>
-    <section id="page-chats" class="hide"><div class="panel"><div class="row"><h2>Сообщения</h2><button class="secondary" id="refreshChats">Обновить</button></div><div class="notice">Выберите диалог по идентификатору thread. Таблица messages должна разрешать чтение и отправку для роли администратора.</div><div class="field"><label>Идентификатор диалога (thread)</label><input id="thread" placeholder="Вставьте thread"></div><div id="chatBox" class="chatbox"><div class="empty">Введите thread и нажмите «Загрузить».</div></div><div class="row"><input id="chatText" placeholder="Написать сообщение…"><button id="sendMessage">Отправить</button></div><button id="loadChat" class="secondary" style="margin-top:10px">Загрузить диалог</button></div></section>
+    <section id="page-chats" class="hide"><div class="panel"><div class="row"><h2>Чаты покупателей</h2><button class="secondary" id="refreshChats">Обновить</button></div><div class="notice">Новые диалоги появляются автоматически. Выберите покупателя слева, чтобы прочитать и ответить.</div><div class="chat-layout"><div id="threadList" class="thread-list"><div class="empty">Загрузка чатов…</div></div><div class="chat-detail"><div id="chatTitle" class="chat-head">Выберите диалог</div><div id="chatBox" class="chatbox"><div class="empty">Сообщения появятся здесь.</div></div><div class="chat-compose"><input id="chatText" placeholder="Написать сообщение…" maxlength="1000"><button id="sendMessage">Отправить</button></div></div></div></div></section>
     <section id="page-users" class="hide"><div class="panel"><div class="row"><h2>Пользователи</h2><button class="secondary" id="refreshUsers">Обновить</button></div><div class="table-wrap"><table><thead><tr><th>№</th><th>Имя</th><th>Email</th><th>Монеты</th><th>Создан</th></tr></thead><tbody id="usersBody"></tbody></table></div></div></section>
     <section id="page-posts" class="hide"><div class="panel"><div class="row"><h2>Публикации</h2><button class="secondary" id="refreshPosts">Обновить</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Группа</th><th>Пользователь</th><th>Текст</th><th>Дата</th><th></th></tr></thead><tbody id="postsBody"></tbody></table></div></div></section>
   </main>
@@ -50,6 +50,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-
 const SUPABASE_URL = "https://epqrrrffvbshtwgsmpue.supabase.co";
 const SUPABASE_KEY = "sb_publishable_wKtYkbXvwW3EvcbGGD-mfA_RylHFWzQ";
 let accessToken = null;
+let currentThread = null, chatsTimer = null, threadTimer = null;
 const $ = s => document.querySelector(s);
 const statusBox = $("#status");
 function setStatus(t, bad=false){statusBox.textContent=t;statusBox.style.color=bad?"#ff8290":"#9aa6bb";}
@@ -68,6 +69,8 @@ function showPage(name){
   document.querySelectorAll("main section").forEach(s=>s.classList.add("hide"));
   $("#page-"+name).classList.remove("hide");
   document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+  if(name==="chats"){loadChats().catch(fail);clearInterval(chatsTimer);chatsTimer=setInterval(()=>{if(!currentThread)loadChats().catch(fail);},5000);}
+  else {clearInterval(chatsTimer);clearInterval(threadTimer);}
   const loaders={dashboard:loadDashboard,orders:loadOrders,codes:loadStock,chats:()=>{},users:loadUsers,posts:loadPosts};
   Promise.resolve(loaders[name]?.()).catch(e=>setStatus(e.message,true));
 }
@@ -129,16 +132,38 @@ async function addCodes(){
  catch(e){msg.style.color="#ff8290";msg.textContent="Ошибка: "+e.message;}
  finally{b.disabled=false;}
 }
-async function loadChat(){
- const thread=$("#thread").value.trim();if(!thread)throw new Error("Введи thread.");
- const rows=await rest("messages","select=id,thread,sender,body,created_at&thread=eq."+encodeURIComponent(thread)+"&order=created_at.asc");
- $("#chatBox").innerHTML=rows.length?rows.map(m=>`<div class="msg ${m.sender==="seller"?"seller":""}"><b>${esc(m.sender)}</b><div>${esc(m.body)}</div><div class="small">${m.created_at?new Date(m.created_at).toLocaleString("ru-RU"):""}</div></div>`).join(""):'<div class="empty">Сообщений нет</div>';
- $("#chatBox").scrollTop=$("#chatBox").scrollHeight;setStatus("Диалог загружен.");
+async function loadChats(){
+ const box=$("#threadList");
+ try{
+  const rows=await rpc("admin_panel_threads");
+  box.innerHTML="";
+  if(!Array.isArray(rows)||!rows.length){box.innerHTML='<div class="empty">Сообщений пока нет.</div>';return;}
+  rows.forEach(t=>{
+   const b=document.createElement("button");b.type="button";b.className="thread-item"+(t.thread===currentThread?" active":"");
+   const title=document.createElement("strong");title.textContent="Покупатель · "+String(t.thread).slice(0,8);
+   const preview=document.createElement("span");preview.className="thread-preview";preview.textContent=(t.sender==="seller"?"Вы: ":"Покупатель: ")+(t.body||"");
+   const date=document.createElement("span");date.className="thread-preview";date.textContent=t.created_at?new Date(t.created_at).toLocaleString("ru-RU"):"";
+   b.append(title,preview,date);b.onclick=()=>openChatThread(t.thread);box.appendChild(b);
+  });
+ }catch(e){box.innerHTML='<div class="empty">Не удалось загрузить чаты: '+esc(e.message)+'</div>';throw e;}
+}
+async function openChatThread(thread){
+ currentThread=thread;$("#chatTitle").textContent="Чат · "+thread;$("#chatText").disabled=false;$("#sendMessage").disabled=false;
+ await loadChatThread();await loadChats();clearInterval(threadTimer);threadTimer=setInterval(()=>loadChatThread().catch(fail),4000);
+}
+async function loadChatThread(){
+ if(!currentThread)return;
+ const rows=await rpc("admin_panel_thread",{p_thread:currentThread});
+ const box=$("#chatBox"),stick=box.scrollTop+box.clientHeight>=box.scrollHeight-40;box.innerHTML="";
+ if(!Array.isArray(rows)||!rows.length)box.innerHTML='<div class="empty">Сообщений пока нет.</div>';
+ else rows.forEach(m=>{const d=document.createElement("div");d.className="msg "+(m.sender==="seller"?"seller":"");const who=document.createElement("b");who.textContent=m.sender==="seller"?"Продавец":"Покупатель";const body=document.createElement("div");body.textContent=m.body||"";const date=document.createElement("div");date.className="small";date.textContent=m.created_at?new Date(m.created_at).toLocaleString("ru-RU"):"";d.append(who,body,date);box.appendChild(d);});
+ if(stick)box.scrollTop=box.scrollHeight;
 }
 async function sendMessage(){
- const thread=$("#thread").value.trim(),body=$("#chatText").value.trim();if(!thread||!body){setStatus("Укажи thread и текст сообщения.",true);return;}
- try{await rest("messages","",{method:"POST",headers:{"Prefer":"return=minimal"},body:JSON.stringify({thread,sender:"seller",body})});$("#chatText").value="";await loadChat();}
- catch(e){fail(e);}
+ const body=$("#chatText").value.trim();if(!currentThread){setStatus("Сначала выбери чат покупателя.",true);return;}if(!body)return;
+ const b=$("#sendMessage");b.disabled=true;
+ try{await rpc("admin_panel_reply",{p_thread:currentThread,p_body:body});$("#chatText").value="";await loadChatThread();await loadChats();setStatus("Ответ отправлен.");}
+ catch(e){fail(e);}finally{b.disabled=false;$("#chatText").focus();}
 }
 async function loadUsers(){
  const rows=await rest("profiles","select=user_no,email,username,coins,created_at&order=created_at.desc");
@@ -155,7 +180,7 @@ $("#logout").onclick=logout;
 $("#nav").addEventListener("click",e=>{const b=e.target.closest("[data-page]");if(b)showPage(b.dataset.page);});
 document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>showPage(b.dataset.go));
 $("#refreshOrders").onclick=()=>loadOrders().catch(fail);$("#refreshStock").onclick=()=>loadStock().catch(fail);$("#addCodes").onclick=addCodes;
-$("#loadChat").onclick=()=>loadChat().catch(fail);$("#refreshChats").onclick=()=>loadChat().catch(fail);$("#sendMessage").onclick=sendMessage;
+$("#refreshChats").onclick=()=>loadChats().catch(fail);$("#sendMessage").onclick=sendMessage;$("#chatText").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage();});
 $("#refreshUsers").onclick=()=>loadUsers().catch(fail);$("#refreshPosts").onclick=()=>loadPosts().catch(fail);
 </script>
 </body>
