@@ -69,6 +69,32 @@ textarea{min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:14p
 .login h1{text-align:center;margin:0 0 16px}
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);background:var(--tx);color:#000;font-weight:600;padding:10px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:9}
 #toast.on{opacity:1}
+
+/* ===== colorful ===== */
+:root{--a1:#ff3d81;--a2:#7c4dff}
+body{background-color:#070914;background-image:radial-gradient(ellipse at 10% 0%,rgba(124,77,255,.32),transparent 45%),radial-gradient(ellipse at 95% 15%,rgba(0,212,255,.22),transparent 40%),radial-gradient(ellipse at 50% 100%,rgba(255,61,129,.2),transparent 45%);background-size:auto}
+.top h1{background:linear-gradient(90deg,#fff,#a8d8ff,#d1b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav button.on{background:linear-gradient(135deg,#ff3d81,#7c4dff)}
+#n-orders.on{background:linear-gradient(135deg,#ff9f1c,#ff3d81)}
+#n-chats.on{background:linear-gradient(135deg,#00b8ff,#7c4dff)}
+#n-codes.on{background:linear-gradient(135deg,#00e5a0,#00b8ff);color:#04131a}
+.btn{background:linear-gradient(135deg,#00e5a0,#00b8ff);color:#04131a}
+.btn.red{background:none;color:var(--red)}
+#rsend,#in,#addc{background:linear-gradient(135deg,#7c4dff,#00b8ff);color:#fff}
+.card{border:1px solid rgba(255,255,255,.07);border-left:4px solid #7c4dff}
+.card.st-new{border-left-color:#ffb020}.card.st-paid{border-left-color:#00e5a0}.card.st-cancelled{border-left-color:#ff4d57}
+.sum div:nth-child(1){background:linear-gradient(145deg,rgba(255,176,32,.3),#15151a)}
+.sum div:nth-child(2){background:linear-gradient(145deg,rgba(0,229,160,.28),#15151a)}
+.sum div:nth-child(3){background:linear-gradient(145deg,rgba(124,77,255,.32),#15151a)}
+.sum div:nth-child(4){background:linear-gradient(145deg,rgba(0,184,255,.3),#15151a)}
+.sum b{font-size:17px}
+.chip.on{background:linear-gradient(135deg,#ff3d81,#7c4dff);color:#fff}
+.m.adm{background:linear-gradient(135deg,#7c4dff,#00b8ff)}
+.stock div:nth-child(1){background:linear-gradient(145deg,rgba(0,184,255,.22),#0a0a0c)}
+.stock div:nth-child(2){background:linear-gradient(145deg,rgba(124,77,255,.25),#0a0a0c)}
+.stock div:nth-child(3){background:linear-gradient(145deg,rgba(255,176,32,.25),#0a0a0c)}
+.stock div:nth-child(4){background:linear-gradient(145deg,rgba(255,61,129,.25),#0a0a0c)}
+.bd{background:#ff3d81;color:#fff}
 </style>
 </head>
 <body>
@@ -248,9 +274,10 @@ async function approveOrder(o) {
 }
 function renderOrders() {
   const cnt = k => k === "all" ? ORD.length : ORD.filter(o => norm(o.status) === k).length;
+  const today = ORD.filter(o => new Date(o.created_at).toDateString() === new Date().toDateString()).length;
   const income = ORD.filter(o => norm(o.status) === "paid").reduce((a, o) => a + (PRICE[o.plan] || 0), 0);
   const sum = $("#sum"); sum.innerHTML = "";
-  [["Ожидают", cnt("new")], ["Оплачено", cnt("paid")], ["Выручка, манат", income]].forEach(([l, v]) => { const d = el("div", "", l); d.appendChild(el("b", "", String(v))); sum.appendChild(d); });
+  [["Ожидают", cnt("new")], ["Оплачено", cnt("paid")], ["Выручка, манат", income], ["Сегодня", today]].forEach(([l, v]) => { const d = el("div", "", l); d.appendChild(el("b", "", String(v))); sum.appendChild(d); });
   const ch = $("#chips"); ch.innerHTML = "";
   FILT.forEach(([k, l]) => { const b = el("button", "chip" + (filt === k ? " on" : ""), l + " " + cnt(k)); b.onclick = () => { filt = k; renderOrders(); }; ch.appendChild(b); });
   const q = $("#q").value.trim().toLowerCase();
@@ -259,7 +286,7 @@ function renderOrders() {
   if (!rows.length) box.appendChild(el("div", "empty", "Заказов нет."));
   rows.forEach(o => {
     const st = norm(o.status);
-    const c = el("div", "card" + (st === "new" ? " new" : ""));
+    const c = el("div", "card st-" + st + (st === "new" ? " new" : ""));
     const r = el("div", "row");
     r.append(el("div", "name", LABEL[o.plan] || o.plan), el("span", "pill " + st, STAT[st] || st));
     c.append(r, el("div", "mut", "Контакт: " + o.contact), el("div", "mut", fmt(o.created_at) + " · № " + o.id));
