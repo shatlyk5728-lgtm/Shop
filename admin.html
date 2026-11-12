@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Админ-панель</title>
+<style>
+:root{--bg:#f3f7f8;--card:#fff;--tx:#0f1e28;--mut:#5d7080;--line:#dde6ea;--acc:#12a876;--accx:#fff;--red:#d64545;--amb:#b97a0a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1620;--card:#12232f;--tx:#eaf3f7;--mut:#8aa1b0;--line:#1f3442;--acc:#3ddc97;--accx:#06261a;--red:#ff7b7b;--amb:#f2b84b;color-scheme:dark}}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.w{max-width:620px;margin:0 auto;padding:18px 14px 40px}
+h1{font-size:22px;margin:0 0 14px}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--mut);font:inherit;font-weight:600;padding:10px;border-radius:10px;cursor:pointer}
+.tabs button.on{background:var(--acc);color:var(--accx);border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.card.new{border-color:var(--amb)}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.row b{font-size:16px}.mut{color:var(--mut);font-size:14px;word-break:break-all}
+.st{font-size:13px;font-weight:700}.st.new{color:var(--amb)}.st.paid{color:var(--acc)}.st.cancelled{color:var(--red)}
+.act{display:flex;gap:8px;margin-top:10px}
+button.b{border:0;background:var(--acc);color:var(--accx);font:inherit;font-weight:700;border-radius:10px;padding:10px 14px;cursor:pointer}
+button.b.x{background:none;color:var(--red);border:1px solid var(--red)}
+input,select,textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--tx);padding:12px;font:inherit;font-size:16px;margin-bottom:10px;outline:none}
+textarea{min-height:120px;font-family:monospace}
+.err{color:var(--red);min-height:20px;margin:0 0 8px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>Админ-панель</h1>
+
+  <div id="login" class="card">
+    <input id="em" type="email" placeholder="Email продавца" autocomplete="username">
+    <input id="pw" type="password" placeholder="Пароль" autocomplete="current-password">
+    <p class="err" id="le"></p>
+    <button class="b" id="in">Войти</button>
+  </div>
+
+  <div id="app" class="hide">
+    <div class="tabs"><button id="b-o" class="on">Заказы</button><button id="b-c">Коды</button><button id="b-x">Выйти</button></div>
+    <div id="orders"></div>
+    <div id="codes" class="hide">
+      <div class="card" id="stock"></div>
+      <div class="card">
+        <select id="plan"></select>
+        <textarea id="list" placeholder="Вставьте коды, по одному в строке"></textarea>
+        <p class="err" id="ce"></p>
+        <button class="b" id="addc">Добавить коды</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== НАСТРОЙКИ: впишите свои значения =====
+const SB = "https://epqrrrffvbshtwgsmpue.supabase.co";
+const KEY = "sb_publishable_wKtYkbXvwW3EvcbGGD-mfA_RylHFWzQ";
+// ============================================
+const $ = s => document.querySelector(s);
+const LABEL = {"std-week":"Стандарт, 1 неделя, 35 ГБ, 55 манат","std-month":"Стандарт, 1 месяц, 75 ГБ, 100 манат","vip-week":"VIP, 1 неделя, 50 ГБ, 95 манат","vip-month":"VIP, 1 месяц, 100 ГБ, 150 манат"};
+const STAT = {new:"Ожидает оплаты", paid:"Оплачен", cancelled:"Отменён"};
+let token = null, timer = null;
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+
+async function api(path, opt = {}) {
+  const r = await fetch(SB + path, {...opt, headers:{apikey:KEY, ...(token ? {Authorization:"Bearer " + token} : {}), "Content-Type":"application/json", ...(opt.headers || {})}});
+  const txt = await r.text();
+  if (!r.ok) { let m = txt; try { m = JSON.parse(txt).message || txt; } catch (e) {} throw new Error(m); }
+  return txt ? JSON.parse(txt) : null;
+}
+
+async function login() {
+  $("#le").textContent = "";
+  try {
+    const d = await api("/auth/v1/token?grant_type=password", {method:"POST", body:JSON.stringify({email:$("#em").value.trim(), password:$("#pw").value})});
+    token = d.access_token;
+    $("#login").classList.add("hide"); $("#app").classList.remove("hide");
+    loadOrders();
+  } catch (e) { $("#le").textContent = "Неверный email или пароль."; }
+}
+function logout() { token = null; clearTimeout(timer); $("#app").classList.add("hide"); $("#login").classList.remove("hide"); $("#pw").value = ""; }
+
+async function loadOrders() {
+  clearTimeout(timer);
+  if (!token) return;
+  try {
+    const rows = await api("/rest/v1/orders?select=*&order=created_at.desc&limit=200");
+    const box = $("#orders"); box.innerHTML = "";
+    if (!rows.length) box.appendChild(el("p", "mut", "Заказов пока нет."));
+    rows.forEach(o => {
+      const c = el("div", "card" + (o.status === "new" ? " new" : ""));
+      const r = el("div", "row");
+      r.append(el("b", "", LABEL[o.plan] || o.plan), el("span", "st " + o.status, STAT[o.status] || o.status));
+      c.append(r, el("div", "", "Контакт: " + o.contact), el("div", "mut", new Date(o.created_at).toLocaleString("ru") + " | № " + o.id));
+      if (o.status === "paid") c.appendChild(el("div", "mut", "Выданный код: " + o.code));
+      if (o.status === "new") {
+        const a = el("div", "act");
+        const ok = el("button", "b", "Оплачено, выдать код"), no = el("button", "b x", "Отменить");
+        ok.onclick = async () => { ok.disabled = true; try { await api("/rest/v1/rpc/approve_order", {method:"POST", body:JSON.stringify({p_id:o.id})}); } catch (e) { alert(e.message); } loadOrders(); };
+        no.onclick = async () => { if (!confirm("Отменить заказ?")) return; try { await api("/rest/v1/orders?id=eq." + o.id, {method:"PATCH", body:JSON.stringify({status:"cancelled"})}); } catch (e) { alert(e.message); } loadOrders(); };
+        a.append(ok, no); c.appendChild(a);
+      }
+      box.appendChild(c);
+    });
+  } catch (e) { if (/JWT|expired/i.test(e.message)) logout(); }
+  timer = setTimeout(loadOrders, 15000);
+}
+
+async function loadStock() {
+  const box = $("#stock"); box.innerHTML = "";
+  try {
+    const rows = await api("/rest/v1/codes?select=plan&used=eq.false&limit=5000");
+    box.appendChild(el("b", "", "Свободные коды"));
+    Object.keys(LABEL).forEach(k => box.appendChild(el("div", "mut", LABEL[k] + ": " + rows.filter(r => r.plan === k).length)));
+  } catch (e) { box.textContent = "Не удалось загрузить остатки."; }
+}
+
+async function addCodes() {
+  const lines = [...new Set($("#list").value.split("\n").map(s => s.trim()).filter(Boolean))];
+  $("#ce").textContent = "";
+  if (!lines.length) return;
+  try {
+    await api("/rest/v1/codes", {method:"POST", body:JSON.stringify(lines.map(code => ({plan:$("#plan").value, code})))});
+    $("#list").value = ""; $("#ce").textContent = "Добавлено: " + lines.length; loadStock();
+  } catch (e) { $("#ce").textContent = "Ошибка: " + e.message; }
+}
+
+function tab(t) {
+  $("#b-o").classList.toggle("on", t === "o"); $("#b-c").classList.toggle("on", t === "c");
+  $("#orders").classList.toggle("hide", t !== "o"); $("#codes").classList.toggle("hide", t !== "c");
+  if (t === "c") loadStock(); else loadOrders();
+}
+
+Object.keys(LABEL).forEach(k => { const o = el("option", "", LABEL[k]); o.value = k; $("#plan").appendChild(o); });
+$("#in").onclick = login;
+$("#pw").onkeydown = e => { if (e.key === "Enter") login(); };
+$("#b-o").onclick = () => tab("o"); $("#b-c").onclick = () => tab("c"); $("#b-x").onclick = logout;
+</script>
+</body>
+</html>

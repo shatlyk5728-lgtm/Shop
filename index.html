@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Happ VPN — тарифы</title>
+<style>
+:root{--bg:#f3f7f8;--card:#fff;--tx:#0f1e28;--mut:#5d7080;--line:#dde6ea;--acc:#12a876;--accx:#fff;--vip:#b97a0a;--vipbg:#fff6e0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1620;--card:#12232f;--tx:#eaf3f7;--mut:#8aa1b0;--line:#1f3442;--acc:#3ddc97;--accx:#06261a;--vip:#f2b84b;--vipbg:#2a2312;color-scheme:dark}}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.w{max-width:520px;margin:0 auto;padding:22px 16px 40px}
+.logo{display:flex;align-items:center;gap:12px}.logo svg{width:56px;height:56px}.logo b{font-size:22px}
+h1{font-size:27px;line-height:1.15;margin:24px 0 8px}.lead{color:var(--mut);margin:0 0 20px}
+.tabs{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px;margin-bottom:14px}
+.tabs button{flex:1;border:0;background:none;color:var(--mut);font:inherit;font-weight:600;padding:11px;border-radius:10px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--acc);color:var(--accx)}
+.tabs button.vip[aria-selected="true"]{background:var(--vip);color:#fff}
+.plans{display:grid;gap:12px}
+.plan,.st{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px}
+.plan.vip{border-color:var(--vip)}.plan .i{flex:1}
+.plan h2{font-size:18px;margin:0}.plan p{margin:2px 0 0;color:var(--mut);font-size:15px}
+.price{font-size:24px;font-weight:700;text-align:right;line-height:1.1}.price small{display:block;font-size:13px;font-weight:500;color:var(--mut)}
+.tag{display:inline-block;background:var(--vipbg);color:var(--vip);font-size:12.5px;font-weight:700;border-radius:8px;padding:2px 8px;margin-bottom:4px}
+button.b{border:0;background:var(--acc);color:var(--accx);font:inherit;font-weight:700;border-radius:12px;padding:11px 16px;cursor:pointer;margin-top:8px}
+.plan.vip button.b{background:var(--vip);color:#fff}
+.st{flex-direction:column;align-items:stretch;margin-bottom:18px;gap:8px}
+.st h2{margin:0;font-size:18px}.st p{margin:0;color:var(--mut);word-break:break-all}
+.code{background:var(--bg);border:1px dashed var(--acc);border-radius:10px;padding:10px;color:var(--tx)!important;font-family:monospace;font-size:14px}
+h3{font-size:19px;margin:30px 0 8px}ol{margin:0;padding-left:20px;color:var(--mut)}ol li{margin:6px 0}
+.dlg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:20}.dlg.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:520px;border-radius:20px 20px 0 0;padding:20px 16px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.sheet h2{margin:0;font-size:20px}.sheet p{margin:0;color:var(--mut)}
+.sheet input{border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--tx);padding:13px;font-size:16px;outline:none}
+.sheet .go{border:0;background:var(--acc);color:var(--accx);font:inherit;font-weight:700;border-radius:12px;padding:13px;cursor:pointer}
+.sheet .no{border:0;background:none;color:var(--mut);font:inherit;padding:6px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="logo">
+    <svg viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3ddc97"/><stop offset="1" stop-color="#1676d2"/></linearGradient></defs><rect width="64" height="64" rx="15" fill="url(#g)"/><path d="M32 11 50 18v13c0 11-7.5 19-18 23C21.500 50 14 42 14 31V18Z" fill="none" stroke="#fff" stroke-width="3.500" stroke-linejoin="round"/><path d="M25 24v16M39 24v16M25 32h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>
+    <b>Happ VPN</b>
+  </div>
+  <h1>Быстрый и безопасный интернет без ограничений</h1>
+  <p class="lead">Выберите тариф, оформите заказ и получите код для приложения Happ.</p>
+  <div id="status"></div>
+  <div class="tabs"><button id="t-std" aria-selected="true">Стандарт</button><button id="t-vip" class="vip" aria-selected="false">VIP</button></div>
+  <div class="plans" id="plans"></div>
+  <h3>Как подключиться</h3>
+  <ol><li>Выберите тариф и нажмите «Купить».</li><li>Оплатите заказ и дождитесь подтверждения.</li><li>Скопируйте код, откройте Happ, нажмите «Добавить подписку» и вставьте его.</li></ol>
+</div>
+<div class="dlg" id="dlg"><div class="sheet" id="sheet"></div></div>
+
+<script>
+// ===== НАСТРОЙКИ: впишите свои значения =====
+const SB = "https://epqrrrffvbshtwgsmpue.supabase.co";
+const KEY = "sb_publishable_wKtYkbXvwW3EvcbGGD-mfA_RylHFWzQ";
+const PAY = "Переведите сумму заказа на номер +99363813143, затем отправьте скриншот оплаты и номер заказа в Telegram: @user_shatlyk";
+// ============================================
+const $ = s => document.querySelector(s);
+const PLANS = [
+  {k:"std-week", t:"std", n:"1 неделя", gb:35, p:55},
+  {k:"std-month", t:"std", n:"1 месяц", gb:75, p:100},
+  {k:"vip-week", t:"vip", n:"1 неделя", gb:50, p:95},
+  {k:"vip-month", t:"vip", n:"1 месяц", gb:100, p:150}
+];
+let tab = "std", timer = null;
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+
+async function rpc(fn, body) {
+  const r = await fetch(SB + "/rest/v1/rpc/" + fn, {method:"POST", headers:{apikey:KEY, "Content-Type":"application/json"}, body:JSON.stringify(body)});
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+const ls = {get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }};
+
+function showPlans() {
+  const box = $("#plans"); box.innerHTML = "";
+  PLANS.filter(p => p.t === tab).forEach(p => {
+    const c = el("div", "plan" + (p.t === "vip" ? " vip" : ""));
+    const i = el("div", "i");
+    if (p.t === "vip") i.appendChild(el("span", "tag", "VIP"));
+    i.append(el("h2", "", p.n), el("p", "", p.gb + " ГБ трафика"));
+    const pr = el("div", "price", String(p.p)); pr.appendChild(el("small", "", "манат"));
+    const b = el("button", "b", "Купить"); b.onclick = () => order(p);
+    const r = el("div"); r.style.textAlign = "right"; r.append(pr, b);
+    c.append(i, r); box.appendChild(c);
+  });
+}
+function setTab(t) { tab = t; $("#t-std").setAttribute("aria-selected", t === "std"); $("#t-vip").setAttribute("aria-selected", t === "vip"); showPlans(); }
+
+function order(p) {
+  const s = $("#sheet"); s.innerHTML = "";
+  const inp = el("input"); inp.placeholder = "Ваш Telegram или телефон"; inp.maxLength = 100;
+  const go = el("button", "go", "Оформить заказ"), no = el("button", "no", "Отмена"), err = el("p");
+  no.onclick = close;
+  go.onclick = async () => {
+    if (inp.value.trim().length < 3) { inp.focus(); return; }
+    go.disabled = true; err.textContent = "";
+    try {
+      const id = await rpc("create_order", {p_plan:p.k, p_contact:inp.value});
+      ls.set("oid", id); close(); checkOrder();
+    } catch (e) { err.textContent = "Не удалось оформить заказ. Попробуйте ещё раз."; go.disabled = false; }
+  };
+  s.append(el("h2", "", (p.t === "vip" ? "VIP" : "Стандарт") + ", " + p.n), el("p", "", p.gb + " ГБ, " + p.p + " манат"), inp, err, go, no);
+  $("#dlg").classList.add("on");
+}
+function close() { $("#dlg").classList.remove("on"); }
+
+async function checkOrder() {
+  clearTimeout(timer);
+  const id = ls.get("oid"), box = $("#status");
+  if (!id) return;
+  try {
+    const row = (await rpc("get_order", {p_id:id}))[0];
+    if (!row) return;
+    box.innerHTML = "";
+    const c = el("div", "st");
+    const plan = PLANS.find(x => x.k === row.plan);
+    c.appendChild(el("h2", "", "Ваш заказ: " + (plan ? (plan.t === "vip" ? "VIP " : "Стандарт ") + plan.n : "")));
+    if (row.status === "paid") {
+      c.append(el("p", "", "Оплата подтверждена. Ваш код для Happ:"), el("p", "code", row.code));
+      const cp = el("button", "b", "Скопировать код");
+      cp.onclick = () => { try { navigator.clipboard.writeText(row.code); cp.textContent = "Скопировано"; } catch (e) {} };
+      c.appendChild(cp);
+    } else if (row.status === "cancelled") {
+      c.appendChild(el("p", "", "Заказ отменён. Вы можете оформить новый."));
+    } else {
+      c.append(el("p", "", "Ожидает оплаты. " + PAY), el("p", "", "Номер заказа: " + id));
+      timer = setTimeout(checkOrder, 10000);
+    }
+    box.appendChild(c);
+  } catch (e) { timer = setTimeout(checkOrder, 20000); }
+}
+
+$("#dlg").onclick = e => { if (e.target.id === "dlg") close(); };
+$("#t-std").onclick = () => setTab("std");
+$("#t-vip").onclick = () => setTab("vip");
+showPlans(); checkOrder();
+</script>
+</body>
+</html>
