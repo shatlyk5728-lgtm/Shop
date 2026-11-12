@@ -75,6 +75,7 @@ body{background-color:#0a0a0c;background-image:url("data:image/svg+xml,%3Csvg xm
       <button id="n-orders" class="on">Заказы</button>
       <button id="n-chats">Чаты</button>
       <button id="n-codes">Коды</button>
+      <button id="n-users">Игроки</button>
     </div>
 
     <!-- Заказы -->
@@ -97,6 +98,9 @@ body{background-color:#0a0a0c;background-image:url("data:image/svg+xml,%3Csvg xm
         </div>
       </div>
     </div>
+
+    <!-- Игроки и посты -->
+    <div id="v-users" class="hide"><div id="users"></div><div class="name" style="margin:16px 0 8px">Последние посты</div><div id="posts"></div></div>
 
     <!-- Коды -->
     <div id="v-codes" class="hide">
@@ -157,13 +161,15 @@ function logout() {
 /* ---------- навигация ---------- */
 function show(v) {
   view = v; stop(); curThread = null;
-  ["orders","chats","codes"].forEach(k => {
+  ["orders","chats","codes","users"].forEach(k => {
     $("#n-" + k).classList.toggle("on", k === v);
   });
   $("#v-orders").classList.toggle("hide", v !== "orders");
   $("#v-chats").classList.toggle("hide", v !== "chats");
   $("#v-codes").classList.toggle("hide", v !== "codes");
+  $("#v-users").classList.toggle("hide", v !== "users");
   $("#thread").classList.add("hide");
+  if (v === "users") loadUsers();
   if (v === "orders") { loadOrders(); timer = setInterval(loadOrders, 15000); }
   if (v === "chats") { loadChats(); timer = setInterval(loadChats, 5000); }
   if (v === "codes") loadStock();
@@ -298,6 +304,67 @@ $("#out").onclick = logout;
 $("#n-orders").onclick = () => show("orders");
 $("#n-chats").onclick = () => show("chats");
 $("#n-codes").onclick = () => show("codes");
+
+/* ---------- игроки и посты ---------- */
+async function loadUsers() {
+  const box = $("#users"), pb = $("#posts"); box.innerHTML = ""; pb.innerHTML = "";
+  try {
+    const us = await api("/rest/v1/profiles?select=id,user_no,username,email,coins,created_at&order=user_no.desc&limit=200");
+    if (!us.length) box.appendChild(el("div", "empty", "Игроков пока нет."));
+    us.forEach(u => {
+      const c = el("div", "card");
+      c.appendChild(el("div", "name", "@" + u.username + "  ·  ID " + u.user_no + "  ·  🪙 " + u.coins));
+      c.appendChild(el("div", "p", u.email + " · " + fmt(u.created_at)));
+      const r = el("div", "");
+      r.style.cssText = "display:flex;gap:8px;margin-top:10px;flex-wrap:wrap";
+      const coin = el("button", "btn", "🪙 Монеты");
+      coin.onclick = async () => {
+        const n = parseInt(prompt("Сколько монет добавить? (минус — списать)", "10"), 10);
+        if (!n) return;
+        try { await api("/rest/v1/profiles?id=eq." + u.id, {method:"PATCH", body:JSON.stringify({coins:Math.max(0, u.coins + n)})}); } catch (e) { alert(e.message); }
+        loadUsers();
+      };
+      const prize = el("button", "btn", "🏆 Приз");
+      prize.onclick = async () => {
+        const p = prompt("Тариф приза: " + Object.keys(LABEL).join(", "), "vip-month");
+        if (!p) return;
+        try { const k = await api("/rest/v1/rpc/admin_award", {method:"POST", body:JSON.stringify({p_username:u.username, p_plan:p.trim()})}); alert("Код выдан игроку (он в «Мои коды»):\n" + k); } catch (e) { alert(e.message); }
+      };
+      const del = el("button", "btn", "Удалить");
+      del.onclick = async () => {
+        if (!confirm("Удалить игрока @" + u.username + " и все его посты?")) return;
+        try { await api("/rest/v1/profiles?id=eq." + u.id, {method:"DELETE"}); } catch (e) { alert(e.message); }
+        loadUsers();
+      };
+      r.append(coin, prize, del); c.appendChild(r); box.appendChild(c);
+    });
+    const ps = await api("/rest/v1/posts?select=id,group_slug,body,media_path,media_type,created_at,profiles(username)&order=id.desc&limit=50");
+    if (!ps.length) pb.appendChild(el("div", "empty", "Постов пока нет."));
+    ps.forEach(p => {
+      const c = el("div", "card");
+      c.appendChild(el("div", "name", "@" + (p.profiles ? p.profiles.username : "?") + " · " + p.group_slug + " · " + fmt(p.created_at)));
+      if (p.body) c.appendChild(el("div", "p", p.body));
+      if (p.media_path) {
+        const m = el(p.media_type === "video" ? "video" : "img");
+        m.src = SB + "/storage/v1/object/public/media/" + p.media_path;
+        if (p.media_type === "video") { m.controls = true; m.preload = "metadata"; }
+        m.style.cssText = "max-width:100%;border-radius:12px;margin-top:8px;display:block";
+        c.appendChild(m);
+      }
+      const d = el("button", "btn", "Удалить пост"); d.style.marginTop = "10px";
+      d.onclick = async () => {
+        if (!confirm("Удалить этот пост?")) return;
+        try {
+          await api("/rest/v1/posts?id=eq." + p.id, {method:"DELETE"});
+          if (p.media_path) await api("/storage/v1/object/media/" + p.media_path, {method:"DELETE"}).catch(() => {});
+        } catch (e) { alert(e.message); }
+        loadUsers();
+      };
+      c.appendChild(d); pb.appendChild(c);
+    });
+  } catch (e) { if (/JWT|expired/i.test(e.message)) logout(); else box.appendChild(el("div", "empty", "Ошибка: " + e.message + " (выполнен ли community.sql?)")); }
+}
+$("#n-users").onclick = () => show("users");
 $("#back").onclick = closeThread;
 $("#rsend").onclick = sendReply;
 $("#reply").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); sendReply(); } };
