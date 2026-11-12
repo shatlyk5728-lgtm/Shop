@@ -74,7 +74,7 @@ function showPage(name){
 function fail(e){setStatus("Ошибка: "+(e.message||e),true);}
 async function login(){
  const b=$("#loginBtn"),err=$("#loginError");err.textContent="";
- if(SUPABASE_KEY.includes("PASTE_")){err.textContent="Сначала вставь Supabase publishable/anon key из index.html в admin.html.";return;}
+ if(!SUPABASE_KEY || !SUPABASE_KEY.startsWith("sb_publishable_")){err.textContent="В admin.html не указан корректный Supabase Publishable Key. Проверь строку SUPABASE_KEY в начале скрипта.";return;}
  const email=$("#email").value.trim(),password=$("#password").value;
  if(!email||!password){err.textContent="Введи email и пароль.";return;}
  b.disabled=true;b.textContent="Выполняется вход…";
