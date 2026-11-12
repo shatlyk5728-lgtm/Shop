@@ -140,6 +140,7 @@ Object.keys(LABEL).forEach(k => { const o = el("option", "", LABEL[k]); o.value 
 $("#in").onclick = login;
 $("#pw").onkeydown = e => { if (e.key === "Enter") login(); };
 $("#b-o").onclick = () => tab("o"); $("#b-c").onclick = () => tab("c"); $("#b-x").onclick = logout;
+$("#addc").onclick = addCodes;
 </script>
 </body>
 </html>
