@@ -152,6 +152,47 @@ input:focus,select:focus,textarea:focus{border-color:#39ff88;box-shadow:0 0 0 3p
 .chip.on{background:linear-gradient(120deg,#39ff88,#00a7ff);color:#00180b}
 .btn.red{color:#ff7295;box-shadow:inset 0 0 0 1px #ff477e}
 @media(prefers-reduced-motion:no-preference){.btn,.nav button,.card{transition:box-shadow .2s,border-color .2s,transform .2s}.btn:hover{box-shadow:0 0 26px rgba(57,255,136,.55);transform:translateY(-1px)}}
+
+/* ULTRA NEON / MOBILE POLISH */
+:root{--neo:#38ff9b;--neo2:#00d9ff;--pink:#ff4f91;--panel:rgba(2,22,16,.88)}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at 15% 8%,rgba(0,255,128,.18),transparent 38%),radial-gradient(ellipse at 88% 30%,rgba(0,190,255,.12),transparent 35%),#020b09!important}
+button,.btn,.lo,select,input,textarea{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease}
+button:active,.btn:active{transform:scale(.975);filter:brightness(1.12)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--neo2);outline-offset:3px}
+.nav{backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-color:rgba(56,255,155,.42)!important;box-shadow:0 12px 38px #00ff8a18,inset 0 1px #ffffff0b}
+.nav button{font-weight:800;letter-spacing:.1px}
+.nav button.on{box-shadow:0 0 25px #00ff9b55,inset 0 1px #ffffff55!important}
+.card,.sum,.thread,.order,.item{box-shadow:0 12px 35px #0008,inset 0 1px #ffffff0a,0 0 22px #00ff8a0b}
+.card{border-color:rgba(56,255,155,.27)!important}
+input,textarea,select{box-shadow:inset 0 2px 12px #0005}
+input:focus,textarea:focus,select:focus{box-shadow:0 0 0 3px #38ff9b20,0 0 24px #38ff9b20!important}
+.btn{box-shadow:0 8px 26px #00ff9b25,0 0 24px #00cfff18!important}
+.name{letter-spacing:.1px}
+#v-codes .name:first-child{display:flex;align-items:center;gap:9px}
+#v-codes .stock{gap:12px}
+#v-codes .stock>*{border:1px solid #36ff9b20;box-shadow:inset 0 1px #ffffff0b,0 8px 24px #0005}
+#v-codes #plan{font-weight:750}
+#v-codes #list{min-height:190px;line-height:1.55}
+#v-codes #addc{min-height:58px;font-size:1.08em;font-weight:900;letter-spacing:.2px}
+#v-orders,#v-chats,#v-bal,#v-media,#v-codes{animation:panelIn .28s ease both}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+#toast{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 8px 28px #0008,0 0 18px #38ff9b22}
+.stickerbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 14px;padding:12px;border:1px solid #38ff9b35;border-radius:18px;background:linear-gradient(120deg,#00ff8a12,#00bfff0d);box-shadow:inset 0 1px #ffffff0b}
+.stickerbar span{font-size:23px;line-height:1;filter:drop-shadow(0 0 7px #38ff9b55)}
+.stickerbar b{font-size:12px;letter-spacing:.7px;color:#9afac7;text-transform:uppercase;margin-right:auto}
+.codes-tip{margin:0 0 14px;color:#a8d8bf;font-size:13px;line-height:1.45}
+@media(max-width:520px){
+  body{padding-bottom:env(safe-area-inset-bottom)}
+  .nav{gap:4px}
+  .nav button{font-size:12px;padding-left:7px;padding-right:7px}
+  .card{border-radius:24px}
+  #v-codes .stock{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stickerbar{gap:7px;padding:10px}
+  .stickerbar span{font-size:21px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
 </style>
 </head>
 <body>
@@ -173,11 +214,11 @@ input:focus,select:focus,textarea:focus{border-color:#39ff88;box-shadow:0 0 0 3p
       <button class="lo" id="out">Выйти</button>
     </div>
     <div class="nav">
-      <button id="n-orders" class="on">Заказы<span class="bd hide" id="b-orders"></span></button>
-      <button id="n-chats">Чаты<span class="bd hide" id="b-chats"></span></button>
-      <button id="n-codes">Коды</button>
-      <button id="n-bal">Баланс</button>
-      <button id="n-media">Фото</button>
+      <button id="n-orders" class="on">📦 Заказы<span class="bd hide" id="b-orders"></span></button>
+      <button id="n-chats">💬 Чаты<span class="bd hide" id="b-chats"></span></button>
+      <button id="n-codes">🔐 Коды</button>
+      <button id="n-bal">💰 Баланс</button>
+      <button id="n-media">🖼️ Фото</button>
     </div>
 
     <div id="v-orders">
@@ -214,15 +255,20 @@ input:focus,select:focus,textarea:focus{border-color:#39ff88;box-shadow:0 0 0 3p
     </div>
 
     <div id="v-codes" class="hide">
+      <div class="stickerbar" aria-label="Украшения раздела кодов">
+        <b>HAPP CODE CENTER</b>
+        <span>🟢</span><span>⚡</span><span>🛡️</span><span>🔐</span><span>💎</span><span>🚀</span><span>✨</span><span>🧩</span>
+      </div>
+      <p class="codes-tip">✨ Управляйте запасами быстро и удобно · Проверяйте тариф перед добавлением кодов</p>
       <div class="card">
-        <div class="name" style="margin-bottom:10px">Свободные коды</div>
+        <div class="name" style="margin-bottom:10px">🎟️ Свободные коды <span aria-hidden="true">✨</span></div>
         <div class="stock" id="stock"></div>
       </div>
       <div class="card">
         <select id="plan"></select>
         <textarea id="list" placeholder="Вставьте коды, по одному в строке"></textarea>
         <p class="err" id="ce"></p>
-        <button class="btn" id="addc" style="width:100%">Добавить коды</button>
+        <button class="btn" id="addc" style="width:100%">⚡ Добавить коды 🚀</button>
       </div>
     </div>
   </div>
