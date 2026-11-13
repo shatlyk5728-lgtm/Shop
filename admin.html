@@ -175,7 +175,7 @@ body.inchat .nav,body.inchat .top{display:none}
 .warn{color:var(--amb);font-size:13px;margin:4px 0}
 .btn.sm{padding:8px 12px;font-size:13px;flex:none;width:auto}
 .btn.red{background:none;color:var(--red);box-shadow:inset 0 0 0 1px var(--red)}
-html{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke='%2319d3ff' stroke-opacity='.10' stroke-width='2.5' stroke-linecap='round'%3E%3Crect x='18' y='30' width='34' height='28' rx='6'/%3E%3Cpath d='M25 30V20a10 10 0 0 1 20 0v10'/%3E%3Ccircle cx='190' cy='24' r='11'/%3E%3Cpath d='M180 33l-34 34M160 53l7 7M152 61l7 7'/%3E%3Crect x='120' y='150' width='34' height='28' rx='6'/%3E%3Cpath d='M127 150v-10a10 10 0 0 1 20 0v10'/%3E%3C/g%3E%3Cg fill='%23ffd23f' fill-opacity='.10'%3E%3Ccircle cx='60' cy='170' r='3'/%3E%3Ccircle cx='200' cy='120' r='2.5'/%3E%3C/g%3E%3C/svg%3E") repeat,#04081a}.top{padding:14px 16px;border-radius:18px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='320' viewBox='0 0 900 320'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230a4fd6'/%3E%3Cstop offset='.55' stop-color='%23061437'/%3E%3Cstop offset='1' stop-color='%2304081a'/%3E%3C/linearGradient%3E%3CradialGradient id='s' cx='.8' cy='.2' r='.5'%3E%3Cstop offset='0' stop-color='%23ffd23f' stop-opacity='.95'/%3E%3Cstop offset='1' stop-color='%23ffd23f' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='900' height='320' fill='url(%23g)'/%3E%3Crect width='900' height='320' fill='url(%23s)'/%3E%3Cg fill='none' stroke='%2319d3ff' stroke-opacity='.55' stroke-width='3'%3E%3Cpath d='M0 240 C150 190 260 290 400 240 S650 190 900 240'/%3E%3Cpath d='M0 270 C160 225 280 315 420 270 S660 225 900 270'/%3E%3Cpath d='M0 210 C170 165 270 255 410 210 S640 160 900 210' stroke-opacity='.3'/%3E%3C/g%3E%3Ccircle cx='720' cy='70' r='42' fill='%23ffd23f'/%3E%3Ctext x='60' y='130' font-family='Arial Black,Arial,sans-serif' font-weight='900' font-size='74' fill='%23ffffff'%3EHAPP VPN%3C/text%3E%3Ctext x='62' y='178' font-family='Arial,sans-serif' font-weight='700' font-size='26' fill='%2319d3ff'%3EБЫСТРО · БЕЗОПАСНО · БЕЗ ОГРАНИЧЕНИЙ%3C/text%3E%3C/svg%3E") center/cover no-repeat,#0b1530!important;border:1px solid #1f3a7a}.top h1{text-shadow:0 2px 10px rgba(0,0,0,.5)}.nav button.on{box-shadow:0 6px 16px rgba(25,211,255,.25)}.btn.ghost{background:none;color:#19d3ff;box-shadow:inset 0 0 0 1px #19d3ff}</style>
+html{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke='%2319d3ff' stroke-opacity='.10' stroke-width='2.5' stroke-linecap='round'%3E%3Crect x='18' y='30' width='34' height='28' rx='6'/%3E%3Cpath d='M25 30V20a10 10 0 0 1 20 0v10'/%3E%3Ccircle cx='190' cy='24' r='11'/%3E%3Cpath d='M180 33l-34 34M160 53l7 7M152 61l7 7'/%3E%3Crect x='120' y='150' width='34' height='28' rx='6'/%3E%3Cpath d='M127 150v-10a10 10 0 0 1 20 0v10'/%3E%3C/g%3E%3Cg fill='%23ffd23f' fill-opacity='.10'%3E%3Ccircle cx='60' cy='170' r='3'/%3E%3Ccircle cx='200' cy='120' r='2.5'/%3E%3C/g%3E%3C/svg%3E") repeat,#04081a}.top{padding:14px 16px;border-radius:18px;background:#0b1530!important;border:1px solid #1f3a7a}.top h1{text-shadow:0 2px 10px rgba(0,0,0,.5)}.nav button.on{box-shadow:0 6px 16px rgba(25,211,255,.25)}.btn.ghost{background:none;color:#19d3ff;box-shadow:inset 0 0 0 1px #19d3ff}.card{background:linear-gradient(145deg,#0f1f47,#081028)!important;border:1px solid rgba(25,211,255,.18)!important;box-shadow:0 10px 30px rgba(0,0,0,.45)!important}.top{background:#0b1530!important}</style>
 </head>
 <body>
 <div class="w">
@@ -868,6 +868,39 @@ function exportChatsTxt() {
   a.href = URL.createObjectURL(blob); a.download = "chats.txt";
   document.body.appendChild(a); a.click(); a.remove();
 }
+/* ---------- v8: функции админки ---------- */
+// Копировать код у оплаченного заказа
+const _ro8 = renderOrders;
+renderOrders = function () {
+  _ro8();
+  document.querySelectorAll("#olist .card.st-paid").forEach(c => {
+    if (c.querySelector(".cpy")) return;
+    const m = [...c.querySelectorAll(".mut")].find(x => x.textContent.startsWith("Выданный код: "));
+    if (!m) return;
+    const code = m.textContent.slice("Выданный код: ".length).trim();
+    const b = el("button", "btn ghost sm cpy", "Копировать код");
+    b.onclick = () => { navigator.clipboard.writeText(code).then(() => toast("Код скопирован")).catch(() => toast("Не удалось скопировать")); };
+    c.appendChild(b);
+  });
+};
+
+// Горячая клавиша «/» — перейти к поиску
+document.addEventListener("keydown", e => {
+  if (e.key !== "/" || !token) return;
+  if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  const target = view === "chats" ? $("#cq") : view === "orders" ? $("#q") : null;
+  if (target && target.offsetParent) { e.preventDefault(); target.focus(); }
+});
+
+// Обновление данных при возврате во вкладку
+document.addEventListener("visibilitychange", () => { if (!document.hidden && token) tick(); });
+
+// Автовыход после 30 минут бездействия
+let lastAct = Date.now();
+["click", "keydown", "touchstart"].forEach(ev => document.addEventListener(ev, () => { lastAct = Date.now(); }, {passive: true}));
+setInterval(() => {
+  if (token && Date.now() - lastAct > 30 * 60 * 1000) { toast("Сессия закрыта из-за бездействия"); logout(); }
+}, 60 * 1000);
 </script>
 </body>
 </html>
