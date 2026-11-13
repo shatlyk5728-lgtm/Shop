@@ -378,6 +378,20 @@ html{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 .cmp th{color:#7fe9ff}
 .news{margin:10px 0}
 .news h3{margin:0 0 4px}
+
+/* ===== v12 ===== */
+.fade{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
+.fade.in{opacity:1;transform:none}
+.reduce-motion *{animation:none!important;transition:none!important}
+.fs-ctl{display:flex;gap:6px;align-items:center;margin:8px 0}
+.fs-ctl button,.tool{border:1px solid #1f3a7a;background:#0b1530;color:#f5f5f7;border-radius:10px;padding:6px 10px;font:inherit;cursor:pointer}
+.tool{margin:6px 6px 6px 0}
+.dot{position:absolute;top:6px;right:18px;width:9px;height:9px;border-radius:50%;background:#ffd23f;box-shadow:0 0 8px #ffd23f}
+.collage{display:flex;gap:0;border-radius:18px;overflow:hidden;background:#0b1530}
+.collage img{width:50%;height:auto;display:block;object-fit:cover}
+.collage-cap{padding:12px 14px;font-weight:700}
+.collage-cap span{display:block;font-weight:400;color:#9fb4d9;font-size:13px}
+@media print{body *{visibility:hidden}#pg-guide,#pg-guide *{visibility:visible}#pg-guide{position:absolute;left:0;top:0;width:100%}#tabs,.fab,.totop{display:none!important}}
 </style>
 </head>
 <body>
@@ -1430,6 +1444,124 @@ const NEWP = ["compare", "calc", "news"];
   function renderNews() {
     const items = [["Новые тарифы", "Тарифы Стандарт и VIP обновлены. Смотрите вкладку «Сравнение»."], ["Бонус каждый день", "Заходите в профиль и забирайте ежедневный бонус коинами."], ["Как подключиться", "Откройте инструкцию «Гид», выберите устройство и следуйте шагам."]];
     document.getElementById("c-news").innerHTML = items.map(([h, t]) => '<div class="card news"><h3>' + h + "</h3><p>" + t + "</p></div>").join("");
+  }
+})();
+/* ===== v12: 15 функций и объединение фото ===== */
+(function () {
+  // 1. Счётчик визитов
+  const n = (Number(localStorage.getItem("visits")) || 0) + 1;
+  localStorage.setItem("visits", String(n));
+  const v = document.createElement("div"); v.className = "hint"; v.style.textAlign = "center";
+  v.textContent = "Вы открывали магазин " + n + " раз";
+  document.querySelector("#pg-shop .wrap").appendChild(v);
+
+  // 2. Точка на «Профиль», если доступен ежедневный бонус
+  const meBtn = document.querySelector('#tabs button[data-go="me"]');
+  const dotSync = () => { if (!meBtn) return; meBtn.style.position = "relative"; meBtn.querySelector(".dot") && meBtn.querySelector(".dot").remove(); if (me && me.can_bonus) { const d = document.createElement("i"); d.className = "dot"; meBtn.appendChild(d); } };
+  const _rm12 = renderMe; renderMe = function () { _rm12(); dotSync(); };
+
+  // 3. Переход к тарифу по ссылке: #vip или #std
+  if (location.hash === "#vip") setTimeout(() => setTab("vip"), 0);
+  if (location.hash === "#std") setTimeout(() => setTab("std"), 0);
+
+  // 4. Печать инструкции
+  const guide = document.querySelector("#pg-guide .wrap");
+  if (guide) {
+    const pr = document.createElement("button"); pr.className = "tool"; pr.textContent = "🖨 Распечатать инструкцию";
+    pr.onclick = () => window.print();
+    guide.insertBefore(pr, guide.children[1] || null);
+    // 5. Поиск по инструкции
+    const q = document.createElement("input"); q.placeholder = "🔍 Поиск по инструкции"; q.style.margin = "8px 0";
+    guide.insertBefore(q, guide.children[1] || null);
+    const filt = () => { const x = q.value.trim().toLowerCase(); [...document.getElementById("gsteps").children].forEach(c => { c.style.display = !x || c.textContent.toLowerCase().includes(x) ? "" : "none"; }); };
+    q.oninput = filt;
+    new MutationObserver(filt).observe(document.getElementById("gsteps"), {childList: true});
+    // 6. Поделиться инструкцией
+    const sh = document.createElement("button"); sh.className = "tool"; sh.textContent = "📤 Поделиться инструкцией";
+    sh.onclick = async () => { const data = {title: "Happ VPN — инструкция", url: location.href.split("#")[0]}; try { if (navigator.share) await navigator.share(data); else await navigator.clipboard.writeText(data.url); } catch (e) {} };
+    guide.insertBefore(sh, guide.children[1] || null);
+  }
+
+  // 7. Копировать номер для оплаты (раздел помощи)
+  const tel = document.querySelector('#pg-help a[href^="tel:"]');
+  if (tel) {
+    const cp = document.createElement("button"); cp.className = "tool"; cp.textContent = "📋 Скопировать номер";
+    cp.onclick = () => { navigator.clipboard.writeText(tel.getAttribute("href").replace("tel:", "")).then(() => { cp.textContent = "Скопировано ✓"; }).catch(() => {}); };
+    tel.parentElement.appendChild(cp);
+  }
+
+  // 8. Открыть Telegram с готовым текстом и ID
+  const tgBtn = document.querySelector('#pg-help a[href*="t.me"]');
+  if (tgBtn) {
+    const pre = document.createElement("button"); pre.className = "tool"; pre.textContent = "✉️ Написать с моим ID";
+    pre.onclick = async () => {
+      const text = "Здравствуйте! Мой ID: " + (me ? me.user_no : "не указан") + ". Вопрос: ";
+      try { await navigator.clipboard.writeText(text); } catch (e) {}
+      window.open(tgBtn.href, "_blank", "noopener");
+    };
+    tgBtn.parentElement.appendChild(pre);
+  }
+
+  // 9. Черновик сообщения в чате
+  const txt = document.getElementById("txt");
+  if (txt) {
+    txt.value = localStorage.getItem("draft") || "";
+    txt.addEventListener("input", () => localStorage.setItem("draft", txt.value));
+    document.getElementById("send") && document.getElementById("send").addEventListener("click", () => setTimeout(() => localStorage.removeItem("draft"), 0));
+  }
+
+  // 10. Плавное появление карточек
+  const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold: .08}) : null;
+  document.querySelectorAll(".card, .plan").forEach(c => { c.classList.add("fade"); io ? io.observe(c) : c.classList.add("in"); });
+
+  // 11. Скрыть / показать баланс
+  const bal = document.getElementById("balchip");
+  if (bal) {
+    let hidden = localStorage.getItem("hideBal") === "1";
+    const paint = () => { const t = bal.textContent; bal.dataset.raw = bal.dataset.raw || t; bal.textContent = hidden ? "••••" : bal.dataset.raw; };
+    bal.addEventListener("dblclick", () => { hidden = !hidden; localStorage.setItem("hideBal", hidden ? "1" : "0"); paint(); });
+    new MutationObserver(() => { if (!bal.dataset.busy) { bal.dataset.raw = bal.textContent; bal.dataset.busy = "1"; paint(); bal.dataset.busy = ""; } }).observe(bal, {childList: true, characterData: true});
+  }
+
+  // 12. Размер шрифта A− / A+
+  const fs = document.createElement("div"); fs.className = "fs-ctl";
+  let size = Number(localStorage.getItem("fs")) || 100;
+  const apply = () => { document.documentElement.style.fontSize = size + "%"; localStorage.setItem("fs", String(size)); };
+  const mk = (t, d) => { const b = document.createElement("button"); b.textContent = t; b.onclick = () => { size = Math.min(130, Math.max(85, size + d)); apply(); }; return b; };
+  fs.append(mk("A−", -5), mk("A+", 5));
+  document.querySelector("#pg-me .wrap") && document.querySelector("#pg-me .wrap").appendChild(fs);
+  apply();
+
+  // 13. Режим уменьшенных анимаций
+  const rm = document.createElement("button"); rm.className = "tool"; rm.textContent = "🐢 Меньше анимаций";
+  const setRm = () => { document.body.classList.toggle("reduce-motion", localStorage.getItem("rm") === "1"); rm.textContent = localStorage.getItem("rm") === "1" ? "⚡ Анимации включить" : "🐢 Меньше анимаций"; };
+  rm.onclick = () => { localStorage.setItem("rm", localStorage.getItem("rm") === "1" ? "0" : "1"); setRm(); };
+  document.querySelector("#pg-me .wrap") && document.querySelector("#pg-me .wrap").appendChild(rm);
+  setRm();
+
+  // 14. Метка «новое» на вкладке «Новости»
+  const newsBtn = document.querySelector('#tabs button[data-go="news"]');
+  const NEWS_KEY = "newsSeen", NEWS_COUNT = 3;
+  if (newsBtn) {
+    const mark = () => { const seen = localStorage.getItem(NEWS_KEY) === String(NEWS_COUNT); newsBtn.querySelector(".dot") && newsBtn.querySelector(".dot").remove(); if (!seen) { newsBtn.style.position = "relative"; const d = document.createElement("i"); d.className = "dot"; newsBtn.appendChild(d); } };
+    newsBtn.addEventListener("click", () => { localStorage.setItem(NEWS_KEY, String(NEWS_COUNT)); mark(); });
+    mark();
+  }
+
+  // 15. Объединение фото акций в одну карточку
+  const posters = [...document.querySelectorAll(".poster-card.w")].slice(0, 2);
+  if (posters.length === 2) {
+    const box = document.createElement("article");
+    box.className = "poster-card w collage";
+    const img1 = posters[0].querySelector("img").cloneNode(true);
+    const img2 = posters[1].querySelector("img").cloneNode(true);
+    const cap = document.createElement("div"); cap.className = "collage-cap";
+    cap.innerHTML = "VPN для Happ<span>7 дней и 1 месяц — выберите подходящий срок</span>";
+    const wrap = document.createElement("div"); wrap.style.display = "flex"; wrap.style.width = "100%";
+    wrap.append(img1, img2);
+    box.append(wrap, cap);
+    posters[0].before(box);
+    posters.forEach(p => p.remove());
   }
 })();
 </script>
