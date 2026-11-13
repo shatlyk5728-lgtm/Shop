@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#7f0d15">
+<meta name="theme-color" content="#02140a">
 <title>Happ VPN — №1 в Туркменистане</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2214%22 fill=%22%237f0d15%22/%3E%3Ctext x=%2232%22 y=%2244%22 font-size=%2240%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22%3EH%3C/text%3E%3C/svg%3E">
 <style>
@@ -260,6 +260,71 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
 .gs .n{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,#ff3d81,#7c4dff)}
 .fq{background:rgba(255,255,255,.04);border-radius:13px;padding:12px 14px;margin:8px 0}
 .fq summary{font-weight:700;cursor:pointer}.fq p{margin:8px 0 0}
+
+/* ===== v3: black & green + Telegram chats ===== */
+:root{--bg:#000;--panel:#0b100d;--panel2:#111812;--line:#1c2520;--a1:#27e07a;--a2:#0a8f45;--mut:#8a9a91}
+html{background:#000}
+body{background:radial-gradient(ellipse at 50% -8%,rgba(39,224,122,.24),transparent 46%),radial-gradient(ellipse at 100% 45%,rgba(0,255,150,.08),transparent 40%),#000!important}
+.bgc{background:#000}
+.bg{background:rgba(0,0,0,.82)}
+.hero h1{background:linear-gradient(90deg,#fff,#7dffb4 55%,#27e07a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero:after{color:#5dff9f}.eyebrow{color:#4dff94}.apple{color:#c4ffdc}.gallery-hint span{color:#4dff94}
+.hlogo{box-shadow:0 0 0 7px rgba(39,224,122,.09),0 0 40px rgba(39,224,122,.3),0 14px 38px rgba(0,0,0,.6)}
+.poster-card{border-color:rgba(39,224,122,.28);background:#0a100c}
+.seg{background:#0a0f0c;border-color:#1c2520}.seg button.on{background:linear-gradient(135deg,#27e07a,#0a8f45);color:#02140a}
+.plan{border-color:rgba(39,224,122,.38);background:linear-gradient(145deg,rgba(39,224,122,.15),#07100b)}
+.gb{background:rgba(39,224,122,.16);color:#6dffa8}
+.buy,.btn{background:linear-gradient(135deg,#27e07a,#0a8f45);color:#02140a;box-shadow:0 6px 18px rgba(39,224,122,.3)}
+.btn.ghost{background:#101712;color:#fff;box-shadow:none}.btn.dark{background:#17201a;color:#fff;box-shadow:none}
+a.btn{color:#02140a}a.btn.ghost{color:#fff}
+.card{background:rgba(8,13,10,.94);border-color:#1c2520}
+.code{border-color:#27e07a;background:rgba(39,224,122,.09)}
+.tabs{background:rgba(5,9,7,.92);border-color:#1c2520}
+.tabs button{position:relative}.tabs button.on{background:rgba(39,224,122,.17);color:#6dffa8}
+.nb{position:absolute;top:1px;left:calc(50% + 4px);min-width:17px;height:17px;border-radius:9px;background:#27e07a;color:#02140a;font:800 10px/1 inherit;font-style:normal;display:grid;place-items:center;padding:0 4px}
+.tour{border-color:rgba(39,224,122,.4);background:linear-gradient(135deg,rgba(39,224,122,.15),rgba(8,13,10,.95))}
+.gs{background:rgba(8,13,10,.94);border-color:#1c2520}.gs .n{background:linear-gradient(135deg,#27e07a,#0a8f45);color:#02140a}
+.lsel button.on{background:linear-gradient(135deg,#27e07a,#0a8f45);color:#02140a}
+.ft{background:rgba(8,13,10,.92)}
+.ft:nth-child(1){background:linear-gradient(145deg,rgba(39,224,122,.26),rgba(8,13,10,.92))}
+.ft:nth-child(2){background:linear-gradient(145deg,rgba(0,212,161,.24),rgba(8,13,10,.92))}
+.ft:nth-child(3){background:linear-gradient(145deg,rgba(182,242,58,.2),rgba(8,13,10,.92))}
+.ft:nth-child(4){background:linear-gradient(145deg,rgba(0,255,150,.2),rgba(8,13,10,.92))}
+.ft:nth-child(5){background:linear-gradient(145deg,rgba(45,212,191,.22),rgba(8,13,10,.92))}
+.ft:nth-child(6){background:linear-gradient(145deg,rgba(74,222,128,.24),rgba(8,13,10,.92))}
+.sheet{background:#050806}.sheet input:focus,.card input:focus{border-color:#27e07a}
+/* Telegram-список чатов */
+#pg-chats .ptitle{text-align:center}
+#chatlist,#people{margin:0 -16px}
+.crow{position:relative;background:transparent;border:0;border-radius:0;margin:0;padding:11px 16px;gap:13px;align-items:flex-start}
+.crow::after{content:"";position:absolute;left:92px;right:0;bottom:0;border-bottom:1px solid rgba(255,255,255,.07)}
+.crow.k:active{background:rgba(255,255,255,.05)}
+.crow.pin{background:rgba(255,255,255,.055)}
+.crow .cav{width:62px;height:62px;font-size:28px;color:#02140a;background:linear-gradient(135deg,#27e07a,#0a8f45)}
+.crow:nth-child(3n+2) .cav{background:linear-gradient(135deg,#00d4a1,#00704f)}
+.crow:nth-child(3n) .cav{background:linear-gradient(135deg,#b6f23a,#4a8f0a)}
+.cn{font-size:17px;font-weight:800}
+.cp{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px;line-height:1.3;color:#8a9a91;margin-top:2px}
+.ct{font-size:13px;margin-top:3px;text-align:right}
+.ub{min-width:22px;height:22px;border-radius:11px;background:#27e07a;color:#02140a;font-size:12px;font-weight:800;display:grid;place-items:center;padding:0 6px;margin:8px 0 0 auto}
+.pn{opacity:.55;margin-top:8px}
+/* окно чата */
+.sheet.f.tg,.sheet.f{background:#030504}
+.tgh{justify-content:flex-start;gap:10px;padding:2px 2px 10px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:0}
+.tgh .x{border:0;background:none;font-size:34px;line-height:1;width:34px;color:#27e07a}
+.cav.sm{width:42px;height:42px;font-size:20px;flex:none}
+.hm{display:flex;flex-direction:column;line-height:1.2}.hm span{font-size:12px;color:#27e07a}
+.hintbar{background:rgba(39,224,122,.13);color:#9dffc6;font-size:13px;padding:10px 12px;border-radius:12px;margin:10px 0 0;font-weight:650}
+.msgs{gap:6px;padding:12px 4px}
+.m{background:#151d18;border-radius:18px 18px 18px 5px;padding:8px 12px 6px}
+.m.me{background:linear-gradient(135deg,#1fbf62,#0b7a3b);border-radius:18px 18px 5px 18px;color:#fff}
+.m.me small{color:#d3ffe4}
+.m.ph{padding:4px}.m.ph img{margin:0;border-radius:14px;max-height:360px;cursor:zoom-in}.m.ph small{padding:0 8px 2px}
+.m.ord{border:1px solid rgba(39,224,122,.55);background:#0a140e}
+.tgi{align-items:center;padding-top:8px}
+.tgi input,.row input{border-radius:99px!important;margin:0!important;background:#0b120d!important}
+.clip{width:44px;height:44px;flex:none;display:grid;place-items:center;font-size:21px;cursor:pointer;border-radius:50%;background:#0b120d;border:1px solid var(--line)}
+.snd{border-radius:50%!important;width:44px;height:44px;min-height:0;padding:0!important;flex:none}
 </style>
 </head>
 <body>
@@ -361,7 +426,7 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
 <nav class="tabs" id="tabs">
   <button data-go="shop" class="on"><span>🛒</span><b data-t="tShop"></b></button>
   <button data-go="guide"><span>📖</span><b data-t="tGuide"></b></button>
-  <button data-go="chats"><span>💬</span><b data-t="tChats"></b></button>
+  <button data-go="chats"><span>💬</span><b data-t="tChats"></b><i class="nb hide" id="nbChats"></i></button>
   <button data-go="people"><span>👥</span><b data-t="tPeople"></b></button>
   <button data-go="help"><span>🛟</span><b data-t="tHelp"></b></button>
   <button data-go="me"><span>👤</span><b data-t="tMe"></b></button>
@@ -370,10 +435,11 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
 <div class="bg" id="orderBg"><div class="sheet" id="orderSheet"></div></div>
 
 <div class="bg" id="chatBg">
-  <div class="sheet f">
-    <div class="head"><h2>🛡 <span data-t="sellerChat"></span></h2><button class="x" id="closeChat" aria-label="Close">✕</button></div>
+  <div class="sheet f tg">
+    <div class="head tgh"><button class="x" id="closeChat" aria-label="Close">‹</button><div class="cav ad sm">🛡</div><div class="hm"><b data-t="sellerChat"></b><span data-t="sellerOn"></span></div></div>
+    <div class="hintbar hide" id="payHint" data-t="payHint"></div>
     <div class="msgs" id="msgs"></div>
-    <div class="row"><input id="txt" data-p="msgPh" maxlength="1000" autocomplete="off" enterkeyhint="send"><button class="btn" id="send">➤</button></div>
+    <div class="row tgi"><label class="clip">📎<input id="shot" type="file" accept="image/*" hidden></label><input id="txt" data-p="msgPh" maxlength="1000" autocomplete="off" enterkeyhint="send"><button class="btn snd" id="send">➤</button></div>
     <div class="err" id="cerr"></div>
   </div>
 </div>
@@ -535,7 +601,7 @@ function order(p) {
   go1.onclick = async () => {
     if (inp.value.trim().length < 3) { inp.focus(); return; }
     go1.disabled = true; err.textContent = "";
-    try { const id = await rpc("create_order", {p_plan:p.k, p_contact:inp.value}); ls.set("oid", id); closeOrder(); checkOrder(); }
+    try { const id = await rpc("create_order", {p_plan:p.k, p_contact:inp.value}); ls.set("oid", id); try { await rpc("send_message", {p_thread: thread, p_body: "[order]" + id + "|" + p.k}); } catch (_) {} closeOrder(); checkOrder(); openChat(); }
     catch (e) { err.textContent = t("orderErr"); go1.disabled = false; }
   };
   s.append(head, el("p", "", p.gb + " " + t("gb") + " · " + p.p + " " + t("cur")), inp, err, go1);
@@ -554,7 +620,7 @@ function renderStatus() {
     cp.onclick = () => { try { navigator.clipboard.writeText(row.code); cp.textContent = t("copied"); } catch (e) {} };
     c.append(el("div", "code", row.code), cp);
   } else if (row.status === "cancelled") c.appendChild(el("p", "", t("cancelled")));
-  else { c.appendChild(el("p", "", t("waiting") + t("pay"))); c.appendChild(el("p", "", t("orderNo") + row.id)); }
+  else { c.appendChild(el("p", "", t("waiting") + t("pay"))); c.appendChild(el("p", "", t("orderNo") + row.id)); const sb = el("button", "btn", t("sendShot")); sb.onclick = openChat; c.appendChild(sb); }
   box.appendChild(c);
 }
 async function checkOrder() {
@@ -577,12 +643,12 @@ function renderChat(rows) {
   const box = $("#msgs"), stick = first || box.scrollTop + box.clientHeight >= box.scrollHeight - 40;
   box.innerHTML = "";
   if (!rows.length) box.appendChild(el("div", "empty", t("sellerEmpty")));
-  rows.forEach(r => {
-    const b = el("div", "m " + (r.sender === "client" ? "me" : "sel"), r.body);
-    b.appendChild(el("small", "", hm(r.created_at))); box.appendChild(b);
-  });
+  rows.forEach(r => box.appendChild(bubble(r)));
   if (stick) box.scrollTop = box.scrollHeight;
   first = false;
+  if (rows.length) ls.set("selSeen", rows[rows.length - 1].created_at);
+  selUnread = 0; setNb();
+  $("#payHint").classList.toggle("hide", !(lastRow && lastRow.status !== "paid" && lastRow.status !== "cancelled"));
 }
 async function loadChat() {
   try { renderChat(await rpc("get_messages", {p_thread: thread})); $("#cerr").textContent = ""; }
@@ -598,25 +664,26 @@ async function sendChat() {
 
 /* ---------- список чатов (как в мессенджере) ---------- */
 async function loadPrev() {
-  try { const r = await rpc("get_messages", {p_thread: thread}); prev.seller = r.length ? r[r.length - 1] : null; } catch (e) {}
+  try { const r = await rpc("get_messages", {p_thread: thread}); prev.seller = r.length ? r[r.length - 1] : null; const sn = ls.get("selSeen") || ""; selUnread = $("#chatBg").classList.contains("on") ? 0 : r.filter(x => x.sender !== "client" && x.created_at > sn).length; setNb(); } catch (e) {}
   await Promise.all(GROUPS.map(async ([k]) => { try { const r = await rpc("get_posts", {p_group: k}); prev[k] = r.length ? r[r.length - 1] : null; } catch (e) {} }));
   renderChats();
 }
-function crow(av, adm, name, tag, line, time, onclick) {
+function crow(av, adm, name, tag, line, time, onclick, unread, pin) {
   const r = el("div", "crow" + (onclick ? " k" : ""));
   r.appendChild(el("div", "cav" + (adm ? " ad" : ""), av));
   const m = el("div", "cm"), n = el("div", "cn", name);
   if (tag) n.appendChild(el("span", "tag", tag));
   m.append(n, line instanceof Node ? line : el("div", "cp", line));
   r.appendChild(m);
-  if (time) r.appendChild(el("div", "ct", time));
+  if (time || unread || pin) { const c = el("div", "ct"); if (time) c.appendChild(el("div", "", time)); if (unread) c.appendChild(el("div", "ub", String(unread))); else if (pin) c.appendChild(el("div", "pn", "📌")); r.appendChild(c); }
+  if (pin) r.classList.add("pin");
   if (onclick) r.onclick = onclick;
   return r;
 }
 function renderChats() {
   const box = $("#chatlist"); box.innerHTML = "";
   const s = prev.seller;
-  box.appendChild(crow("🛡", true, t("sellerChat"), t("admin"), s ? (s.sender === "client" ? "✓ " : "") + s.body : t("sellerEmpty"), s ? hm(s.created_at) : "", openChat));
+  box.appendChild(crow("🛡", true, t("sellerChat"), t("admin"), s ? (s.sender === "client" ? "✓✓ " : "") + pv(s.body) : t("sellerEmpty"), s ? hm(s.created_at) : "", openChat, selUnread, true));
   GROUPS.forEach(([k, i]) => {
     const p = prev[k];
     box.appendChild(crow(i, false, t("g-" + k), "", p ? "@" + p.username + ": " + (p.body || t("media")) : t("noMsg"), p ? hm(p.created_at) : "", () => openGrp(k)));
@@ -788,6 +855,47 @@ function renderExtra() {
   FAQ.forEach(x => { const d = el("details", "fq"); d.append(el("summary", "", T3(x[0])), el("p", "", x[1] === "pay" ? t("pay") : T3(x[1]))); q.appendChild(d); });
 }
 
+/* ---------- v3: чат как в Telegram, скриншоты оплаты ---------- */
+Object.assign(D, {
+  orderCard:["Заказ","Order","Sargyt"],
+  sendShot:["📸 Отправить скриншот оплаты","📸 Send payment screenshot","📸 Töleg skrinşotyny ugrat"],
+  payHint:["Нажмите 📎 и отправьте скриншот оплаты. Продавец проверит и выдаст код прямо здесь.","Tap 📎 and send the payment screenshot. The seller will check it and give you the code here.","📎 basyp töleg skrinşotyny iberiň. Satyjy barlap, kody şu ýerde berer."],
+  sellerOn:["отвечает здесь","replies here","şu ýerde jogap berýär"],
+  uploading:["Загрузка…","Uploading…","Ýüklenýär…"],
+  photo:["📷 Фото","📷 Photo","📷 Surat"], orderPv:["🧾 Заказ","🧾 Order","🧾 Sargyt"]
+});
+let selUnread = 0;
+const setNb = () => { const n = $("#nbChats"); n.textContent = selUnread; n.classList.toggle("hide", !selUnread); };
+const pv = b => !b ? "" : b.startsWith("[img]") ? t("photo") : b.startsWith("[order]") ? t("orderPv") : b;
+function bubble(r) {
+  const mine = r.sender === "client", b = el("div", "m " + (mine ? "me" : "sel")), body = r.body || "";
+  if (body.startsWith("[img]")) {
+    const i = el("img"); i.src = SB + "/storage/v1/object/public/media/" + body.slice(5); i.loading = "lazy";
+    i.onclick = () => window.open(i.src, "_blank"); b.classList.add("ph"); b.appendChild(i);
+  } else if (body.startsWith("[order]")) {
+    const [id, pk] = body.slice(7).split("|"), p = PLANS.find(x => x.k === pk);
+    b.classList.add("ord");
+    b.append(el("b", "", "🧾 " + t("orderCard")), el("div", "", p ? tn(p) + " · " + t(p.n) + " · " + p.gb + " " + t("gb") + " · " + p.p + " " + t("cur") : ""), el("div", "hint", "№ " + String(id).slice(0, 8)));
+  } else b.appendChild(document.createTextNode(body));
+  b.appendChild(el("small", "", hm(r.created_at) + (mine ? " ✓✓" : "")));
+  return b;
+}
+async function sendShot(f) {
+  const err = $("#cerr"); err.textContent = "";
+  if (!f) return;
+  if (f.size > 20 * 1024 * 1024) { err.textContent = t("big"); return; }
+  $("#send").disabled = true; err.textContent = t("uploading");
+  try {
+    const ext = ((f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg").slice(0, 5);
+    const path = "pay/" + thread + "/" + crypto.randomUUID() + "." + ext;
+    const r = await fetch(SB + "/storage/v1/object/media/" + path, {method:"POST", headers:{apikey:KEY, "Content-Type":f.type || "image/jpeg"}, body:f});
+    if (!r.ok) throw new Error(t("upFail"));
+    await rpc("send_message", {p_thread: thread, p_body: "[img]" + path});
+    err.textContent = ""; first = true; loadChat();
+  } catch (e) { err.textContent = em(e); }
+  $("#send").disabled = false; $("#shot").value = "";
+}
+
 /* ---------- события ---------- */
 if (Array.isArray(BG) && BG.length) BG.concat(BG[0]).forEach(s => { const i = el("img"); i.src = s; i.alt = ""; $("#bgc").appendChild(i); });
 document.querySelectorAll("#tabs button").forEach(b => { b.onclick = () => go(b.dataset.go); });
@@ -808,6 +916,9 @@ $("#mBg").onclick = e => { if (e.target.id === "mBg") $("#mBg").classList.remove
 setInterval(touch, 60000);
 $("#gBuy").onclick = () => go("shop");
 $("#hChat").onclick = openChat;
+$("#shot").onchange = e => sendShot(e.target.files[0]);
+setInterval(loadPrev, 15000);
+loadPrev();
 
 applyLang();
 loadMe();

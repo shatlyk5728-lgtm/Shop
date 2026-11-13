@@ -70,31 +70,52 @@ textarea{min-height:120px;font-family:ui-monospace,Menlo,monospace;font-size:14p
 #toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translateX(-50%);background:var(--tx);color:#000;font-weight:600;padding:10px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:9}
 #toast.on{opacity:1}
 
-/* ===== colorful ===== */
-:root{--a1:#ff3d81;--a2:#7c4dff}
-body{background-color:#070914;background-image:radial-gradient(ellipse at 10% 0%,rgba(124,77,255,.32),transparent 45%),radial-gradient(ellipse at 95% 15%,rgba(0,212,255,.22),transparent 40%),radial-gradient(ellipse at 50% 100%,rgba(255,61,129,.2),transparent 45%);background-size:auto}
-.top h1{background:linear-gradient(90deg,#fff,#a8d8ff,#d1b3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.nav button.on{background:linear-gradient(135deg,#ff3d81,#7c4dff)}
-#n-orders.on{background:linear-gradient(135deg,#ff9f1c,#ff3d81)}
-#n-chats.on{background:linear-gradient(135deg,#00b8ff,#7c4dff)}
-#n-codes.on{background:linear-gradient(135deg,#00e5a0,#00b8ff);color:#04131a}
-.btn{background:linear-gradient(135deg,#00e5a0,#00b8ff);color:#04131a}
+/* ===== black & green ===== */
+:root{--bg:#000;--card:#0b100d;--tx:#f2fff7;--mut:#8a9a91;--line:#1c2520;--a1:#27e07a;--a2:#0a8f45;--red:#ff5a63;--amb:#ffc247;--grn:#27e07a}
+body{background-color:#000;background-image:radial-gradient(ellipse at 50% -10%,rgba(39,224,122,.24),transparent 46%),radial-gradient(ellipse at 100% 60%,rgba(0,255,150,.08),transparent 40%);background-size:auto}
+.top h1{background:linear-gradient(90deg,#fff,#7dffb4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top img{box-shadow:0 0 0 3px rgba(39,224,122,.25),0 0 22px rgba(39,224,122,.35)}
+.nav{background:rgba(11,16,13,.92);border:1px solid var(--line)}
+.nav button.on{background:linear-gradient(135deg,#27e07a,#0a8f45);color:#02140a}
+.bd{background:#27e07a;color:#02140a}
+.btn{background:linear-gradient(135deg,#27e07a,#0a8f45);color:#02140a}
 .btn.red{background:none;color:var(--red)}
-#rsend,#in,#addc{background:linear-gradient(135deg,#7c4dff,#00b8ff);color:#fff}
-.card{border:1px solid rgba(255,255,255,.07);border-left:4px solid #7c4dff}
-.card.st-new{border-left-color:#ffb020}.card.st-paid{border-left-color:#00e5a0}.card.st-cancelled{border-left-color:#ff4d57}
-.sum div:nth-child(1){background:linear-gradient(145deg,rgba(255,176,32,.3),#15151a)}
-.sum div:nth-child(2){background:linear-gradient(145deg,rgba(0,229,160,.28),#15151a)}
-.sum div:nth-child(3){background:linear-gradient(145deg,rgba(124,77,255,.32),#15151a)}
-.sum div:nth-child(4){background:linear-gradient(145deg,rgba(0,184,255,.3),#15151a)}
+.btn.sm{background:var(--bg);color:var(--tx)}
+.card{border:1px solid var(--line);border-left:4px solid #27e07a}
+.card.st-new{border-left-color:#ffc247}.card.st-paid{border-left-color:#27e07a}.card.st-cancelled{border-left-color:#ff5a63}
+.card.new{box-shadow:0 0 0 1px #ffc247,var(--sh)}
+.pill.paid{background:rgba(39,224,122,.16);color:#27e07a}
+.sum div:nth-child(1){background:linear-gradient(145deg,rgba(255,194,71,.3),#0b100d)}
+.sum div:nth-child(2){background:linear-gradient(145deg,rgba(39,224,122,.3),#0b100d)}
+.sum div:nth-child(3){background:linear-gradient(145deg,rgba(0,212,161,.28),#0b100d)}
+.sum div:nth-child(4){background:linear-gradient(145deg,rgba(182,242,58,.24),#0b100d)}
 .sum b{font-size:17px}
-.chip.on{background:linear-gradient(135deg,#ff3d81,#7c4dff);color:#fff}
-.m.adm{background:linear-gradient(135deg,#7c4dff,#00b8ff)}
-.stock div:nth-child(1){background:linear-gradient(145deg,rgba(0,184,255,.22),#0a0a0c)}
-.stock div:nth-child(2){background:linear-gradient(145deg,rgba(124,77,255,.25),#0a0a0c)}
-.stock div:nth-child(3){background:linear-gradient(145deg,rgba(255,176,32,.25),#0a0a0c)}
-.stock div:nth-child(4){background:linear-gradient(145deg,rgba(255,61,129,.25),#0a0a0c)}
-.bd{background:#ff3d81;color:#fff}
+.chip{background:#0b100d}.chip.on{background:#27e07a;color:#02140a}
+.stock div:nth-child(1){background:linear-gradient(145deg,rgba(39,224,122,.22),#000)}
+.stock div:nth-child(2){background:linear-gradient(145deg,rgba(0,212,161,.22),#000)}
+.stock div:nth-child(3){background:linear-gradient(145deg,rgba(255,194,71,.22),#000)}
+.stock div:nth-child(4){background:linear-gradient(145deg,rgba(182,242,58,.2),#000)}
+input,select,textarea{background:#050806}
+/* Telegram-список */
+.thr{padding:11px 2px;gap:13px;border-radius:0;background:transparent;box-shadow:none;border:0;border-bottom:1px solid rgba(255,255,255,.07)}
+.thr:active{background:rgba(255,255,255,.04)}
+.thr .av{width:56px;height:56px;font-size:23px;color:#02140a;background:linear-gradient(135deg,#27e07a,#0a8f45)}
+.thr:nth-child(3n+2) .av{background:linear-gradient(135deg,#00d4a1,#00704f)}
+.thr:nth-child(3n) .av{background:linear-gradient(135deg,#b6f23a,#4a8f0a)}
+.tl{display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0}
+.thr .p{flex:1;min-width:0}
+.bd2{min-width:22px;height:22px;border-radius:11px;background:#27e07a;color:#02140a;font-size:12px;font-weight:800;display:grid;place-items:center;padding:0 6px;flex:none}
+.th{display:flex;align-items:center;gap:10px;padding:2px 0 12px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.th .back{font-size:34px;line-height:1;margin:0;padding:0 6px 0 0;color:#27e07a}
+.th .av{width:44px;height:44px;font-size:19px;color:#02140a;flex:none}
+.oc{margin:0 0 8px;padding:12px}
+.clip{width:46px;height:46px;flex:none;display:grid;place-items:center;font-size:21px;cursor:pointer;border-radius:50%;background:#050806;border:1px solid var(--line)}
+.msgs{height:50vh;background:radial-gradient(circle at 20% 0,rgba(39,224,122,.09),transparent 45%),#030504}
+.m.adm{background:linear-gradient(135deg,#1fbf62,#0b7a3b)}
+.m.cli{background:#151d18}
+.m.ph{padding:4px}.m.ph img{display:block;max-width:100%;max-height:360px;border-radius:14px;cursor:zoom-in}
+.m.sys{align-self:center;background:rgba(39,224,122,.1);border:1px solid rgba(39,224,122,.35);color:#9dffc6;font-size:13px;max-width:92%}
+.reply input{border-radius:99px}
 </style>
 </head>
 <body>
@@ -129,18 +150,16 @@ body{background-color:#070914;background-image:radial-gradient(ellipse at 10% 0%
     <div id="v-chats" class="hide"><div id="threads"></div></div>
 
     <div id="thread" class="hide">
-      <button class="back" id="back">‹ Назад к чатам</button>
-      <div class="card">
-        <div class="name" id="tTitle" style="margin-bottom:10px"></div>
-        <div class="msgs" id="tmsgs"></div>
-        <div class="chips" id="quick" style="margin:10px 0 0"></div>
-        <div class="reply">
-          <input id="reply" placeholder="Ответ покупателю" maxlength="1000" autocomplete="off">
-          <button class="btn" id="rsend">➤</button>
-        </div>
+      <div class="th"><button class="back" id="back">‹</button><div class="av" id="tAv">👤</div><div style="min-width:0"><div class="name" id="tTitle"></div><div class="mut" id="tSub"></div></div></div>
+      <div id="tOrders"></div>
+      <div class="msgs" id="tmsgs"></div>
+      <div class="chips" id="quick" style="margin:8px 0 0"></div>
+      <div class="reply">
+        <label class="clip">📎<input id="afile" type="file" accept="image/*" hidden></label>
+        <input id="reply" placeholder="Ответ покупателю" maxlength="1000" autocomplete="off">
+        <button class="btn" id="rsend">➤</button>
       </div>
     </div>
-
     <div id="v-codes" class="hide">
       <div class="card">
         <div class="name" style="margin-bottom:10px">Свободные коды</div>
@@ -165,7 +184,7 @@ const LABEL = {"std-week":"Стандарт, 1 неделя, 35 ГБ, 55 ман�
 const PRICE = {"std-week":55,"std-month":100,"vip-week":95,"vip-month":150};
 const STAT = {new:"Ожидает оплаты", paid:"Оплачен", cancelled:"Отменён"};
 const FILT = [["all","Все"],["new","Ожидают"],["paid","Оплачены"],["cancelled","Отменены"]];
-const QUICK = ["Здравствуйте! Сейчас проверю оплату.", "Пришлите, пожалуйста, чек об оплате.", "Оплата получена, вот ваш код:\n", "Спасибо за покупку! Если будут вопросы — пишите."];
+const QUICK = ["Здравствуйте! Сейчас проверю оплату.", "Оплату вижу ✅ Выдаю код.", "Скриншот не читается, отправьте ещё раз.", "Пришлите, пожалуйста, чек об оплате.", "Оплата получена, вот ваш код:\n", "Спасибо за покупку! Если будут вопросы — пишите."];
 
 let token = null, view = "orders", timer = null, curThread = null, filt = "all";
 let ORD = [], MSG = [], maxIn = -1, prevNew = -1, ctx = null;
@@ -302,7 +321,7 @@ function renderOrders() {
       const no = el("button", "btn red", "Отменить");
       ok.onclick = async () => {
         ok.disabled = no.disabled = true;
-        try { await approveOrder(o); toast("Код выдан"); } catch (e) { alert(e.message); }
+        try { await approveAndNotify(o, threadOf(o.id)); toast("Код выдан и отправлен клиенту"); } catch (e) { alert(e.message); }
         tick();
       };
       no.onclick = async () => {
@@ -313,31 +332,54 @@ function renderOrders() {
       };
       a.append(ok, no); c.appendChild(a);
     }
+    const th = threadOf(o.id);
+    if (th) { const cb = el("button", "btn sm", "💬 Открыть чат"); cb.onclick = () => { show("chats"); openThread(th); }; c.appendChild(cb); }
     box.appendChild(c);
   });
 }
 
 /* ---------- чаты ---------- */
+const isImg = b => (b || "").startsWith("[img]"), isOrd = b => (b || "").startsWith("[order]");
+const imgUrl = b => SB + "/storage/v1/object/public/media/" + b.slice(5);
+const ordId = b => b.slice(7).split("|")[0];
+const pv = b => isImg(b) ? "📷 Фото" : isOrd(b) ? "🧾 Новый заказ" : (b || "");
+function threadOrders(t) {
+  const ids = [];
+  MSG.forEach(r => { if (r.thread === t && isOrd(r.body)) { const i = ordId(r.body); if (!ids.includes(i)) ids.push(i); } });
+  return ids.map(i => ORD.find(o => String(o.id) === i)).filter(Boolean);
+}
+function threadOf(oid) { const m = MSG.find(r => isOrd(r.body) && ordId(r.body) === String(oid)); return m ? m.thread : null; }
+const tName = t => { const o = threadOrders(t)[0]; return o && o.contact ? String(o.contact) : "Покупатель " + t.slice(0, 6); };
+const adminSend = (t, text) => api("/rest/v1/rpc/admin_reply", {method:"POST", body:JSON.stringify({p_thread:t, p_body:text})});
+async function approveAndNotify(o, t) {
+  await approveOrder(o);
+  if (!t) return;
+  try {
+    const r = await api("/rest/v1/orders?select=code&id=eq." + o.id);
+    if (r[0] && r[0].code) await adminSend(t, "✅ Оплата подтверждена! Ваш код для Happ:\n" + r[0].code + "\n\nСпасибо за покупку!");
+  } catch (e) {}
+}
 function renderChats() {
   const box = $("#threads"); box.innerHTML = "";
   const map = threads();
   if (!map.size) { box.appendChild(el("div", "empty", "Сообщений пока нет. Они появятся, когда покупатели напишут в чат.")); return; }
-  map.forEach((v, t) => {
-    const c = el("div", "card thr" + (v.unread ? " unread" : ""));
-    c.appendChild(el("div", "av", "👤"));
-    const mid = el("div", "t");
-    mid.append(el("div", "name", "Покупатель " + t.slice(0, 6)), el("div", "p", (v.last.sender === "admin" ? "Вы: " : "") + v.last.body));
-    const right = el("div", "c", fmt(v.last.created_at));
-    if (v.unread) right.appendChild(el("div", "bd", String(v.unread)));
-    c.append(mid, right);
-    c.onclick = () => openThread(t);
+  map.forEach((v, tid) => {
+    const nm = tName(tid), c = el("div", "thr" + (v.unread ? " unread" : ""));
+    c.appendChild(el("div", "av", (nm[0] || "👤").toUpperCase()));
+    const mid = el("div", "t"), top = el("div", "tl"), bot = el("div", "tl");
+    top.append(el("div", "name", nm), el("div", "c", fmt(v.last.created_at)));
+    bot.appendChild(el("div", "p", (v.last.sender === "admin" ? "Вы: " : "") + pv(v.last.body)));
+    const wait = threadOrders(tid).some(x => norm(x.status) === "new");
+    if (v.unread) bot.appendChild(el("div", "bd2", String(v.unread)));
+    else if (wait) bot.appendChild(el("span", "pill new", "💰 ждёт"));
+    mid.append(top, bot); c.appendChild(mid);
+    c.onclick = () => openThread(tid);
     box.appendChild(c);
   });
 }
-function openThread(t) {
-  curThread = t; markSeen(t);
+function openThread(tid) {
+  curThread = tid; markSeen(tid);
   $("#v-chats").classList.add("hide"); $("#thread").classList.remove("hide");
-  $("#tTitle").textContent = "Покупатель " + t.slice(0, 6);
   $("#tmsgs").dataset.n = "";
   renderThread(); render();
 }
@@ -347,7 +389,32 @@ function closeThread() {
   render();
 }
 function renderThread() {
-  const rows = MSG.filter(r => r.thread === curThread).reverse();
+  const tid = curThread, os = threadOrders(tid), nm = tName(tid);
+  $("#tTitle").textContent = nm; $("#tAv").textContent = (nm[0] || "👤").toUpperCase();
+  $("#tSub").textContent = os.length ? (LABEL[os[0].plan] || os[0].plan) : "";
+  const po = $("#tOrders"); po.innerHTML = "";
+  os.forEach(o => {
+    const st = norm(o.status), c = el("div", "card oc st-" + st), r = el("div", "row");
+    r.append(el("div", "name", LABEL[o.plan] || o.plan), el("span", "pill " + st, STAT[st] || st));
+    c.append(r, el("div", "mut", "Контакт: " + o.contact + " · " + fmt(o.created_at)));
+    if (st === "new") {
+      const a = el("div", "acts"), ok = el("button", "btn", "✅ Подтвердить оплату"), no = el("button", "btn red", "Отменить");
+      ok.onclick = async () => {
+        ok.disabled = no.disabled = true;
+        try { await approveAndNotify(o, tid); toast("Код выдан и отправлен клиенту"); } catch (e) { alert(e.message); }
+        $("#tmsgs").dataset.n = ""; tick();
+      };
+      no.onclick = async () => {
+        if (!confirm("Отменить заказ?")) return;
+        ok.disabled = no.disabled = true;
+        try { await api("/rest/v1/orders?id=eq." + o.id, {method:"PATCH", body:JSON.stringify({status:"cancelled"})}); await adminSend(tid, "❌ Заказ отменён. Если это ошибка, напишите нам."); } catch (e) { alert(e.message); }
+        $("#tmsgs").dataset.n = ""; tick();
+      };
+      a.append(ok, no); c.appendChild(a);
+    } else if (st === "paid" && o.code) c.appendChild(el("div", "mut", "Выданный код: " + o.code));
+    po.appendChild(c);
+  });
+  const rows = MSG.filter(r => r.thread === tid).reverse();
   const box = $("#tmsgs");
   const first = box.dataset.n === "";
   const stick = first || box.scrollTop + box.clientHeight >= box.scrollHeight - 40;
@@ -359,7 +426,14 @@ function renderThread() {
   rows.forEach(r => {
     const dd = dayOf(r.created_at);
     if (dd !== d) { d = dd; box.appendChild(el("div", "day", dd)); }
-    const b = el("div", "m " + (r.sender === "admin" ? "adm" : "cli"), r.body);
+    const body = r.body || "", b = el("div", "m " + (r.sender === "admin" ? "adm" : "cli"));
+    if (isImg(body)) {
+      const i = el("img"); i.src = imgUrl(body); i.loading = "lazy"; i.onclick = () => window.open(i.src, "_blank");
+      b.classList.add("ph"); b.appendChild(i);
+    } else if (isOrd(body)) {
+      const o = ORD.find(x => String(x.id) === ordId(body));
+      b.classList.add("sys"); b.textContent = "🧾 Заказ: " + (o ? (LABEL[o.plan] || o.plan) : "№ " + ordId(body).slice(0, 8));
+    } else b.appendChild(document.createTextNode(body));
     b.appendChild(el("small", "", hm(r.created_at)));
     box.appendChild(b);
   });
@@ -369,12 +443,21 @@ async function sendReply() {
   const inp = $("#reply"), text = inp.value.trim();
   if (!text || !curThread) return;
   inp.value = "";
-  try {
-    await api("/rest/v1/rpc/admin_reply", {method:"POST", body:JSON.stringify({p_thread:curThread, p_body:text})});
-    $("#tmsgs").dataset.n = "";
-    await tick();
-  } catch (e) { inp.value = text; alert("Не отправлено: " + e.message); }
+  try { await adminSend(curThread, text); $("#tmsgs").dataset.n = ""; await tick(); }
+  catch (e) { inp.value = text; alert("Не отправлено: " + e.message); }
   inp.focus();
+}
+async function sendFile(f) {
+  if (!f || !curThread) return;
+  try {
+    const ext = ((f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg").slice(0, 5);
+    const path = "admin/" + curThread + "/" + crypto.randomUUID() + "." + ext;
+    const r = await fetch(SB + "/storage/v1/object/media/" + path, {method:"POST", headers:{apikey:KEY, Authorization:"Bearer " + token, "Content-Type":f.type || "image/jpeg"}, body:f});
+    if (!r.ok) throw new Error("Не удалось загрузить файл");
+    await adminSend(curThread, "[img]" + path);
+    $("#tmsgs").dataset.n = ""; await tick();
+  } catch (e) { alert(e.message); }
+  $("#afile").value = "";
 }
 
 /* ---------- коды ---------- */
@@ -412,6 +495,7 @@ $("#n-chats").onclick = () => show("chats");
 $("#n-codes").onclick = () => show("codes");
 $("#back").onclick = closeThread;
 $("#rsend").onclick = sendReply;
+$("#afile").onchange = e => sendFile(e.target.files[0]);
 $("#reply").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); sendReply(); } };
 $("#q").oninput = renderOrders;
 $("#addc").onclick = addCodes;
