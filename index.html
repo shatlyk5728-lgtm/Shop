@@ -346,6 +346,7 @@ a.btn{color:#02140a}a.btn.ghost{color:#fff}
 .cav img,.av2 img{width:100%;height:100%;object-fit:cover;display:block}
 .av2{width:56px;height:56px;box-shadow:0 0 0 2px rgba(39,224,122,.5)}
 .mini{width:20px;height:20px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:6px}
+.mdel{border:0;background:none;color:var(--mut);font-size:12px;cursor:pointer;margin-top:4px;padding:2px 0;display:block}
 </style>
 </head>
 <body>
@@ -750,7 +751,9 @@ function fillMembers(box) {
     const on = isOn(m), l = el("div", "cp");
     l.append(el("span", "dot" + (on ? " on" : "")), document.createTextNode(t(on ? "online" : "offline")));
     const mine = me && m.user_no === me.user_no;
-    box.appendChild(crow(avOf(m.user_no), false, "@" + m.username + (mine ? " (" + t("you") + ")" : ""), "", l, "ID " + m.user_no, null));
+    const row = crow(avOf(m.user_no), false, "@" + m.username + (mine ? " (" + t("you") + ")" : ""), "", l, "ID " + m.user_no, null);
+    row.style.cursor = "pointer"; row.onclick = () => memberCard(m);
+    box.appendChild(row);
   });
 }
 function renderPeople() { fillMembers($("#people")); if ($("#mBg").classList.contains("on")) fillMembers($("#mList")); }
@@ -801,7 +804,7 @@ function renderMe() {
 function openGrp(k) {
   grp = k; lastId = -1; const g = GROUPS.find(x => x[0] === k);
   $("#gT").textContent = g[1] + " " + t("g-" + k); $("#gE").textContent = ""; $("#gBg").classList.add("on");
-  loadGrp(); gTimer = setInterval(loadGrp, 5000);
+  checkGrpAdmin(); loadGrp(); gTimer = setInterval(loadGrp, 5000);
 }
 function closeGrp() { $("#gBg").classList.remove("on"); clearInterval(gTimer); loadPrev(); }
 async function loadGrp() {
@@ -822,7 +825,17 @@ async function loadGrp() {
         if (v) { m.controls = true; m.preload = "metadata"; m.playsInline = true; }
         b.appendChild(m);
       }
-      b.appendChild(el("small", "", hm(r.created_at))); box.appendChild(b);
+      b.appendChild(el("small", "", hm(r.created_at)));
+      if (me && (r.user_no === me.user_no || gAdmin)) {
+        const del = el("button", "mdel", "🗑 Удалить");
+        del.onclick = async () => {
+          if (!confirm("Удалить сообщение?")) return;
+          try { await rpc("group_delete_post", {p_token: tk(), p_id: r.id}); lastId = -1; loadGrp(); }
+          catch (e) { $("#gE").textContent = "Нельзя удалить: " + (e.message || ""); }
+        };
+        b.appendChild(del);
+      }
+      box.appendChild(b);
     });
     if (stick) box.scrollTop = box.scrollHeight;
   } catch (e) {}
@@ -847,6 +860,46 @@ async function sendGrp() {
     inp.value = ""; $("#gF").value = ""; lastId = -1; loadGrp();
   } catch (e) { err.textContent = em(e); }
   $("#gS").disabled = false;
+}
+
+/* ---------- группы: админы, карточка участника, удаление ---------- */
+let gAdmin = false;
+async function checkGrpAdmin() {
+  gAdmin = false;
+  if (!me) return;
+  try {
+    const r = await fetch(SB + "/rest/v1/group_roles?select=role&group_key=eq." + encodeURIComponent(grp) + "&user_no=eq." + me.user_no, {headers:{apikey:KEY}});
+    const rows = await r.json();
+    gAdmin = Array.isArray(rows) && rows.some(x => x.role === "admin");
+  } catch (e) {}
+  lastId = -1;
+  loadGrp();
+}
+function memberCard(m) {
+  const old = document.getElementById("mcBg"); if (old) old.remove();
+  const bg = el("div", "bg on"); bg.id = "mcBg";
+  const sh = el("div", "sheet");
+  const h = el("div", "head");
+  const x = el("button", "x", "✕"); x.onclick = () => bg.remove();
+  h.append(el("h2", "", "@" + m.username), x);
+  sh.append(h, el("p", "hint", "ID " + m.user_no));
+  const err = el("div", "err");
+  if (gAdmin && grp) {
+    const g = GROUPS.find(z => z[0] === grp);
+    const b = el("button", "btn", "➕ Добавить в группу " + (g ? g[1] : ""));
+    b.onclick = async () => {
+      err.textContent = ""; b.disabled = true;
+      try { await rpc("group_add_member", {p_token: tk(), p_group: grp, p_user_no: m.user_no}); b.textContent = "Добавлен ✓"; }
+      catch (e) { err.textContent = "Не удалось добавить: " + (e.message || ""); b.disabled = false; }
+    };
+    sh.appendChild(b);
+  } else {
+    sh.appendChild(el("p", "hint", "Добавлять участников в группу может только администратор группы."));
+  }
+  sh.appendChild(err);
+  bg.appendChild(sh);
+  bg.onclick = e => { if (e.target === bg) bg.remove(); };
+  document.body.appendChild(bg);
 }
 
 /* ---------- v2: новые вкладки ---------- */
@@ -1012,6 +1065,32 @@ loadPrev();
 applyLang();
 loadMe();
 checkOrder();
+/* ---------- поделиться и установка ---------- */
+function addShareCard() {
+  const b = $("#me");
+  if (!b) return;
+  const old = $("#shareCard"); if (old) old.remove();
+  const c = el("div", "card"); c.id = "shareCard";
+  c.appendChild(el("h3", "", "Поделиться магазином"));
+  c.appendChild(el("p", "hint", "Отправьте ссылку друзьям в Telegram или WhatsApp."));
+  const btn = el("button", "btn", "Поделиться");
+  btn.onclick = async () => {
+    const url = location.href.split("#")[0];
+    try {
+      if (navigator.share) { await navigator.share({title: "Happ VPN", text: "Happ VPN — быстрый и безопасный VPN", url}); return; }
+      await navigator.clipboard.writeText(url);
+      btn.textContent = "Ссылка скопирована ✓";
+    } catch (e) {}
+  };
+  c.appendChild(btn);
+  const standalone = window.navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  if (!standalone) c.appendChild(el("p", "hint", "Чтобы открыть как приложение: Safari → «Поделиться» → «На экран “Домой”»."));
+  b.appendChild(c);
+}
+(function () {
+  const orig = renderMe;
+  renderMe = function () { orig(); addShareCard(); };
+})();
 </script>
 </body>
 </html>
