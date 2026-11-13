@@ -220,6 +220,12 @@ body.inchat .nav,body.inchat .top{display:none}
         <div class="stock" id="stock"></div>
       </div>
       <div class="card">
+        <div class="name">Сброс покупок</div>
+        <div class="mut" style="margin:6px 0 12px">Удалит все заказы из истории и вернёт выданные коды в свободный остаток. Действие необратимо.</div>
+        <button class="btn red" id="resetPurchases" type="button" style="width:100%">Сбросить все покупки кодов</button>
+        <p class="err" id="resetError"></p>
+      </div>
+      <div class="card">
         <select id="plan"></select>
         <textarea id="list" placeholder="Вставьте коды, по одному в строке"></textarea>
         <p class="err" id="ce"></p>
@@ -532,6 +538,31 @@ async function loadStock() {
     });
   } catch (e) { box.textContent = "Не удалось загрузить остатки."; }
 }
+async function resetPurchases() {
+  const btn = $("#resetPurchases"), err = $("#resetError");
+  err.textContent = "";
+  if (!confirm("Сбросить ВСЕ покупки? Все заказы (включая ожидающие и отменённые) будут удалены из истории, а использованные коды снова станут свободными. Это нельзя отменить.")) return;
+  const phrase = prompt('Для подтверждения введите: СБРОСИТЬ');
+  if (phrase !== "СБРОСИТЬ") { toast("Сброс отменён"); return; }
+  btn.disabled = true; btn.textContent = "Сбрасываю…";
+  try {
+    await api("/rest/v1/orders?id=not.is.null", {method:"DELETE", headers:{Prefer:"return=minimal"}});
+    try {
+      await api("/rest/v1/codes?used=eq.true", {method:"PATCH", headers:{Prefer:"return=minimal"}, body:JSON.stringify({used:false})});
+    } catch (e) {
+      throw new Error("Заказы удалены, но коды не удалось вернуть в остаток. Ошибка: " + e.message);
+    }
+    ORD = [];
+    await tick();
+    await loadStock();
+    toast("Все покупки сброшены, коды возвращены в остаток");
+  } catch (e) {
+    err.textContent = "Ошибка сброса: " + e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = "Сбросить все покупки кодов";
+  }
+}
+
 async function addCodes() {
   const lines = [...new Set($("#list").value.split("\n").map(s => s.trim()).filter(Boolean))];
   $("#ce").textContent = "";
@@ -661,6 +692,7 @@ $("#afile").onchange = e => sendFile(e.target.files[0]);
 $("#reply").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); sendReply(); } };
 $("#q").oninput = renderOrders;
 $("#addc").onclick = addCodes;
+$("#resetPurchases").onclick = resetPurchases;
 </script>
 </body>
 </html>
