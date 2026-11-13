@@ -424,6 +424,18 @@ body,button,input,select,textarea{font-family:"Manrope",-apple-system,system-ui,
 .buy.vip,.plan.vip .buy{background:linear-gradient(135deg,#fbbf24,#f472b6)!important}
 .bal b{background:linear-gradient(90deg,#34d399,#19d3ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .lang button.on{background:linear-gradient(90deg,#19d3ff,#a78bfa)!important;color:#fff!important}
+
+/* ===== регистрация, без фото, новый низ ===== */
+.err{color:#ff7b86;font-size:14px;min-height:18px;margin:6px 0}
+.sitefoot{margin:40px -16px -40px;padding:34px 22px calc(120px + env(safe-area-inset-bottom));border-radius:26px 26px 0 0;background:linear-gradient(160deg,#0a4fd6 0%,#7c3aed 45%,#f472b6 75%,#fbbf24 100%);color:#fff;position:relative;overflow:hidden}
+.sitefoot::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 10%,rgba(255,255,255,.22),transparent 40%);pointer-events:none}
+.sitefoot .fb{display:flex;align-items:center;gap:12px;font-weight:800;font-size:18px;position:relative}
+.sitefoot .fb img{width:44px;height:44px;border-radius:14px;object-fit:cover}
+.sitefoot p{position:relative;margin:10px 0 16px;opacity:.95;font-size:14px}
+.sitefoot .fl{display:flex;flex-wrap:wrap;gap:8px;position:relative;margin-bottom:16px}
+.sitefoot .fl button{border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.12);color:#fff;border-radius:99px;padding:7px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.sitefoot .fc{position:relative;font-size:12px;opacity:.85;border-top:1px solid rgba(255,255,255,.3);padding-top:12px}
+.sitefoot a{color:#fff;font-weight:800}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap"></head>
 <body>
@@ -1629,6 +1641,75 @@ document.getElementById("plans").insertAdjacentElement("afterend", shareLink);
 (function () {
   const saved = localStorage.getItem("tab");
   if (!location.hash && saved && saved !== "shop" && document.querySelector('#tabs button[data-go="' + saved + '"]')) go(saved);
+})();
+/* ===== v14: регистрация, очистка фото, низ страницы ===== */
+(function () {
+  // 1. Регистрация с сохранением введённых данных и понятными ошибками
+  function buildReg() {
+    const card = document.querySelector("#me .card");
+    if (!card) return;
+    card.innerHTML = "";
+    const e1 = document.createElement("input"); e1.type = "email"; e1.placeholder = "Email"; e1.autocomplete = "email";
+    e1.value = sessionStorage.getItem("rEmail") || "";
+    const un = document.createElement("input"); un.placeholder = "Имя пользователя (3–20 символов)"; un.maxLength = 20; un.autocapitalize = "none";
+    un.value = sessionStorage.getItem("rUser") || "";
+    const msg = document.createElement("div"); msg.className = "err";
+    const g = document.createElement("button"); g.className = "btn"; g.textContent = "Зарегистрироваться";
+    e1.oninput = () => sessionStorage.setItem("rEmail", e1.value);
+    un.oninput = () => sessionStorage.setItem("rUser", un.value);
+    g.onclick = async () => {
+      const email = e1.value.trim(), user = un.value.trim();
+      msg.textContent = "";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = "Введите правильный email"; return; }
+      if (!/^[A-Za-z0-9_]{3,20}$/.test(user)) { msg.textContent = "Имя: 3–20 латинских букв, цифр или знак _"; return; }
+      g.disabled = true; g.textContent = "Создаём профиль…";
+      try {
+        const r = await rpc("register", {p_email: email, p_username: user});
+        const row = Array.isArray(r) ? r[0] : r;
+        if (!row || !row.token) throw new Error("no token");
+        ls.set("ptoken", row.token);
+        sessionStorage.removeItem("rEmail"); sessionStorage.removeItem("rUser");
+        note = "Профиль создан ✓";
+        await loadMe();
+      } catch (e) {
+        const m = (e && e.message) || "";
+        msg.textContent = /exist|taken|duplicate|уже/i.test(m) ? "Такой email или имя уже заняты" : "Не удалось зарегистрироваться. Проверьте интернет и попробуйте ещё раз.";
+        g.disabled = false; g.textContent = "Зарегистрироваться";
+      }
+    };
+    const h = document.createElement("h3"); h.textContent = "Создать профиль";
+    const hint = document.createElement("p"); hint.className = "hint"; hint.textContent = "Регистрация бесплатная. Нужны email и уникальное имя.";
+    card.append(h, e1, un, g, msg, hint);
+  }
+  const prevRM = renderMe;
+  renderMe = function () { prevRM(); if (!me) buildReg(); };
+
+  // 2. Убрать фото с главной (логотип оставляем)
+  document.querySelectorAll('img[src^="img/"]').forEach(img => {
+    if (img.classList.contains("hlogo") || img.id === "lbImg") return;
+    const box = img.closest("article, figure, .poster-card, .card, .banner-wrap");
+    (box || img).remove();
+  });
+  const killText = ["Листай в сторону", "Всё о Happ", "HAPP VPN · OFFICIAL", "Новости, инструкции"];
+  document.querySelectorAll("h1,h2,h3,p,div,span").forEach(n => {
+    if (n.children.length > 3) return;
+    const tx = (n.textContent || "").trim();
+    if (killText.some(k => tx.startsWith(k)) && tx.length < 200) n.remove();
+  });
+  document.querySelectorAll(".banner, .posters, .rail").forEach(n => n.remove());
+
+  // 3. Красивый низ страницы
+  const foot = document.createElement("footer");
+  foot.className = "sitefoot";
+  const logoSrc = (document.querySelector(".hlogo") || {}).src || "";
+  foot.innerHTML = '<div class="fb">' + (logoSrc ? '<img src="' + logoSrc + '" alt="">' : "") + '<span>Happ VPN</span></div>'
+    + '<p>Быстрый и безопасный VPN для Happ. Оплата переводом, поддержка в чате и группах.</p>'
+    + '<div class="fl"><button data-f="shop">Магазин</button><button data-f="guide">Гид</button><button data-f="chats">Чаты</button><button data-f="help">Помощь</button><button data-f="me">Профиль</button></div>'
+    + '<div class="fc">Поддержка: <a href="https://t.me/user_shatlyk" target="_blank" rel="noopener">@user_shatlyk</a> · © 2026 Happ VPN</div>';
+  foot.querySelectorAll("button[data-f]").forEach(b => { b.onclick = () => go(b.dataset.f); });
+  const nav = document.getElementById("tabs");
+  (nav || document.body).before ? nav.before(foot) : document.body.appendChild(foot);
+  renderMe();
 })();
 </script>
 </body>
