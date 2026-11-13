@@ -226,6 +226,12 @@ body.inchat .nav,body.inchat .top{display:none}
         <p class="err" id="resetError"></p>
       </div>
       <div class="card">
+        <div class="name">Удаление свободных кодов</div>
+        <div class="mut" style="margin:6px 0 12px">Удалит из базы все неиспользованные коды (used = false). Уже выданные коды не затронет. Действие необратимо.</div>
+        <button class="btn red" id="resetFreeCodes" type="button" style="width:100%">Удалить все свободные коды</button>
+        <p class="err" id="resetFreeError"></p>
+      </div>
+      <div class="card">
         <select id="plan"></select>
         <textarea id="list" placeholder="Вставьте коды, по одному в строке"></textarea>
         <p class="err" id="ce"></p>
@@ -558,6 +564,25 @@ async function resetPurchases() {
   }
 }
 
+
+async function resetFreeCodes() {
+  const btn = $("#resetFreeCodes"), err = $("#resetFreeError");
+  err.textContent = "";
+  if (!confirm("Удалить ВСЕ свободные коды? Неиспользованные коды будут удалены из базы без возможности восстановления.")) return;
+  const phrase = prompt('Для подтверждения введите: УДАЛИТЬ КОДЫ');
+  if (phrase !== "УДАЛИТЬ КОДЫ") { toast("Удаление отменено"); return; }
+  btn.disabled = true; btn.textContent = "Удаляю…";
+  try {
+    await api("/rest/v1/rpc/admin_reset_free_codes", {method:"POST", body:"{}"});
+    await loadStock();
+    toast("Все свободные коды удалены");
+  } catch (e) {
+    err.textContent = "Ошибка удаления: " + e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = "Удалить все свободные коды";
+  }
+}
+
 async function addCodes() {
   const lines = [...new Set($("#list").value.split("\n").map(s => s.trim()).filter(Boolean))];
   $("#ce").textContent = "";
@@ -688,6 +713,7 @@ $("#reply").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); send
 $("#q").oninput = renderOrders;
 $("#addc").onclick = addCodes;
 $("#resetPurchases").onclick = resetPurchases;
+$("#resetFreeCodes").onclick = resetFreeCodes;
 </script>
 </body>
 </html>
