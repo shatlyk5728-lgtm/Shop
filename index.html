@@ -1237,6 +1237,79 @@ function filterMembers() {
 }
 document.getElementById("mQ").oninput = filterMembers;
 new MutationObserver(filterMembers).observe(document.getElementById("mList"), {childList: true});
+/* ===== v10: функции групп и профиля ===== */
+(function () {
+  const box = document.getElementById("gM"), gTxt = document.getElementById("gTxt");
+  if (!box || !gTxt) return;
+  const row = gTxt.parentElement;
+
+  // 1. Поиск по сообщениям группы
+  const search = document.createElement("input");
+  search.placeholder = "🔍 Поиск по сообщениям группы";
+  search.style.marginBottom = "8px";
+  box.insertAdjacentElement("beforebegin", search);
+  function filterMsgs() {
+    const q = search.value.trim().toLowerCase();
+    [...box.children].forEach(n => { n.style.display = !q || n.textContent.toLowerCase().includes(q) ? "" : "none"; });
+  }
+  search.oninput = filterMsgs;
+
+  // 2. Кнопка копирования текста сообщения (идемпотентно)
+  function decorate() {
+    [...box.children].forEach(n => {
+      if (!n.classList || !n.classList.contains("m") || n.querySelector(".cpm")) return;
+      const b = document.createElement("button");
+      b.className = "mdel cpm"; b.textContent = "⧉ Копировать";
+      b.onclick = () => {
+        const txt = [...n.childNodes].filter(x => x.nodeType === 3).map(x => x.textContent).join(" ").trim();
+        navigator.clipboard.writeText(txt).then(() => { b.textContent = "Скопировано ✓"; }).catch(() => {});
+      };
+      n.appendChild(b);
+    });
+    filterMsgs();
+  }
+  new MutationObserver(decorate).observe(box, {childList: true});
+
+  // 3. Счётчик символов
+  const cnt = document.createElement("div");
+  cnt.className = "hint"; cnt.style.textAlign = "right"; cnt.style.marginTop = "4px";
+  const upd = () => { cnt.textContent = gTxt.value.length + " / " + (gTxt.maxLength > 0 ? gTxt.maxLength : 1000); };
+  gTxt.addEventListener("input", upd); upd();
+  row.insertAdjacentElement("afterend", cnt);
+
+  // 4. Быстрые эмодзи
+  const bar = document.createElement("div");
+  bar.style.cssText = "display:flex;gap:6px;margin:6px 0;flex-wrap:wrap";
+  ["🔥", "👍", "❤️", "😂", "😮", "🙏", "✅"].forEach(e => {
+    const b = document.createElement("button");
+    b.className = "x"; b.textContent = e;
+    b.onclick = () => { gTxt.value += e; gTxt.dispatchEvent(new Event("input")); gTxt.focus(); };
+    bar.appendChild(b);
+  });
+  row.insertAdjacentElement("beforebegin", bar);
+})();
+
+// 5. Поделиться своим ID
+(function () {
+  const prev = renderMe;
+  renderMe = function () {
+    prev();
+    if (!me) return;
+    const c = document.createElement("div"); c.className = "card";
+    c.appendChild(Object.assign(document.createElement("h3"), {textContent: "Мой ID"}));
+    c.appendChild(Object.assign(document.createElement("p"), {className: "hint", textContent: "Отправьте ID другу, чтобы он нашёл вас в группе."}));
+    const b = document.createElement("button"); b.className = "btn"; b.textContent = "Поделиться ID";
+    b.onclick = async () => {
+      const text = "Мой ID в Happ VPN: " + me.user_no;
+      try {
+        if (navigator.share) await navigator.share({title: "Happ VPN", text});
+        else { await navigator.clipboard.writeText(text); b.textContent = "ID скопирован ✓"; }
+      } catch (e) {}
+    };
+    c.appendChild(b);
+    document.getElementById("me").appendChild(c);
+  };
+})();
 </script>
 </body>
 </html>
