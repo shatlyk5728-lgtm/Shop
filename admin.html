@@ -132,16 +132,38 @@ input,select,textarea{background:#050806}
 .pstrip img{height:90px;border-radius:10px;cursor:pointer;border:1px solid var(--line);flex:none}
 .lb{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.88);display:grid;place-items:center}
 .lb img{max-width:96vw;max-height:92vh;border-radius:12px}
+
+/* NEON MATRIX UPGRADE */
+:root{--bg:#020806;--card:rgba(5,20,13,.92);--tx:#eafff1;--mut:#8bb9a0;--line:rgba(42,255,133,.28);--a1:#39ff88;--a2:#00a85a;--grn:#39ff88;--red:#ff477e;--amb:#ffe66d;--sh:0 12px 38px rgba(0,255,120,.13)}
+body{background:radial-gradient(ellipse at 12% 0%,rgba(0,255,130,.2),transparent 38%),radial-gradient(ellipse at 90% 12%,rgba(0,190,255,.15),transparent 34%),linear-gradient(135deg,#020806,#06150e 55%,#080b18)!important}
+#matrix{position:fixed;inset:0;width:100%;height:100%;z-index:-1;opacity:.30;pointer-events:none}
+.card,.nav,.sum div,.chip,.msgs{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.card{border:1px solid rgba(57,255,136,.25);box-shadow:0 0 24px rgba(0,255,120,.08),var(--sh)}
+.top h1{letter-spacing:.5px;text-shadow:0 0 18px rgba(57,255,136,.55)}
+.nav{border:1px solid var(--line);background:rgba(3,15,9,.9)}
+.nav button.on,.btn{background:linear-gradient(120deg,#39ff88,#00c878 48%,#00a7ff);color:#00180b;box-shadow:0 0 18px rgba(0,255,130,.28)}
+input,select,textarea{background:rgba(0,8,5,.88);border-color:rgba(57,255,136,.3)}
+input:focus,select:focus,textarea:focus{border-color:#39ff88;box-shadow:0 0 0 3px rgba(57,255,136,.12)}
+.login{border-color:rgba(57,255,136,.55);box-shadow:0 0 45px rgba(0,255,120,.17),var(--sh)}
+.login h1{color:#8dffb7;text-shadow:0 0 18px rgba(57,255,136,.55)}
+.remember{display:flex;align-items:center;gap:9px;color:#b9ffd2;font-size:13px;margin:2px 0 12px;cursor:pointer}
+.remember input{width:18px;height:18px;margin:0;accent-color:#39ff88}
+.pill.paid{background:rgba(57,255,136,.16);color:#62ffa2}
+.chip.on{background:linear-gradient(120deg,#39ff88,#00a7ff);color:#00180b}
+.btn.red{color:#ff7295;box-shadow:inset 0 0 0 1px #ff477e}
+@media(prefers-reduced-motion:no-preference){.btn,.nav button,.card{transition:box-shadow .2s,border-color .2s,transform .2s}.btn:hover{box-shadow:0 0 26px rgba(57,255,136,.55);transform:translateY(-1px)}}
 </style>
 </head>
 <body>
+<canvas id="matrix" aria-hidden="true"></canvas>
 <div class="w">
 
   <div id="login" class="card login">
     <h1>Вход для продавца</h1>
     <input id="em" type="email" placeholder="Email" autocomplete="username">
     <input id="pw" type="password" placeholder="Пароль" autocomplete="current-password">
-    <p class="err" id="le"></p>
+<label class="remember"><input id="remember" type="checkbox" checked> <span>Запомнить меня на этом устройстве</span></label>
+<p class="err" id="le"></p>
     <button class="btn" id="in" style="width:100%">Войти</button>
   </div>
 
@@ -249,6 +271,11 @@ async function login() {
   try {
     const d = await api("/auth/v1/token?grant_type=password", {method:"POST", body:JSON.stringify({email:$("#em").value.trim(), password:$("#pw").value})});
     token = d.access_token;
+    if ($("#remember").checked && d.refresh_token) {
+      try { localStorage.setItem("happ_admin_refresh", d.refresh_token); localStorage.setItem("happ_admin_email", $("#em").value.trim()); } catch (e) {}
+    } else {
+      try { localStorage.removeItem("happ_admin_refresh"); localStorage.removeItem("happ_admin_email"); } catch (e) {}
+    }
     $("#login").classList.add("hide"); $("#app").classList.remove("hide");
     maxIn = -1; prevNew = -1;
     show("orders");
@@ -257,6 +284,7 @@ async function login() {
 }
 function logout() {
   token = null; clearInterval(timer); timer = null; curThread = null;
+  try { localStorage.removeItem("happ_admin_refresh"); localStorage.removeItem("happ_admin_email"); } catch (e) {}
   $("#app").classList.add("hide"); $("#login").classList.remove("hide"); $("#pw").value = "";
   document.title = "Админ-панель";
 }
@@ -623,6 +651,27 @@ $("#afile").onchange = e => sendFile(e.target.files[0]);
 $("#reply").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); sendReply(); } };
 $("#q").oninput = renderOrders;
 $("#addc").onclick = addCodes;
+
+/* Восстановление сессии по refresh token; пароль не хранится */
+(async function restoreAdminSession(){
+  try{
+    const email=localStorage.getItem("happ_admin_email"),refresh=localStorage.getItem("happ_admin_refresh");
+    if(email)$("#em").value=email;
+    if(!refresh)return;
+    const d=await api("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:refresh})});
+    token=d.access_token;if(d.refresh_token)localStorage.setItem("happ_admin_refresh",d.refresh_token);
+    $("#login").classList.add("hide");$("#app").classList.remove("hide");
+    maxIn=-1;prevNew=-1;show("orders");timer=setInterval(tick,5000);
+  }catch(e){try{localStorage.removeItem("happ_admin_refresh")}catch(_){}}
+})();
+
+<script>
+/* Декоративный Matrix-фон, не перехватывает нажатия и ввод */
+(()=>{const c=document.getElementById('matrix');if(!c)return;const x=c.getContext('2d');const chars='アイウエオカキクケコサシスセソタチツテト012345789ABCDEF<>/{}[]$#';let w=0,h=0,drops=[],font=15;
+function resize(){const d=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;c.width=w*d;c.height=h*d;c.style.width=w+'px';c.style.height=h+'px';x.setTransform(d,0,0,d,0,0);drops=Array(Math.ceil(w/font)).fill(1)}
+function draw(){x.fillStyle='rgba(0,5,3,.12)';x.fillRect(0,0,w,h);x.font=font+'px monospace';for(let i=0;i<drops.length;i++){x.fillStyle=Math.random()>.96?'#caffdf':'#20ff78';x.fillText(chars[Math.random()*chars.length|0],i*font,drops[i]*font);if(drops[i]*font>h&&Math.random()>.975)drops[i]=0;drops[i]++}requestAnimationFrame(draw)}
+resize();addEventListener('resize',resize);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)draw()})();
+</script>
 </script>
 </body>
 </html>
