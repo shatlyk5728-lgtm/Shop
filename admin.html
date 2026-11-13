@@ -541,17 +541,12 @@ async function loadStock() {
 async function resetPurchases() {
   const btn = $("#resetPurchases"), err = $("#resetError");
   err.textContent = "";
-  if (!confirm("Сбросить ВСЕ покупки? Все заказы (включая ожидающие и отменённые) будут удалены из истории, а использованные коды снова станут свободными. Это нельзя отменить.")) return;
+  if (!confirm("Сбросить ВСЕ покупки? Все заказы будут удалены из истории, а использованные коды снова станут свободными. Это нельзя отменить.")) return;
   const phrase = prompt('Для подтверждения введите: СБРОСИТЬ');
   if (phrase !== "СБРОСИТЬ") { toast("Сброс отменён"); return; }
   btn.disabled = true; btn.textContent = "Сбрасываю…";
   try {
-    await api("/rest/v1/orders?id=not.is.null", {method:"DELETE", headers:{Prefer:"return=minimal"}});
-    try {
-      await api("/rest/v1/codes?used=eq.true", {method:"PATCH", headers:{Prefer:"return=minimal"}, body:JSON.stringify({used:false})});
-    } catch (e) {
-      throw new Error("Заказы удалены, но коды не удалось вернуть в остаток. Ошибка: " + e.message);
-    }
+    await api("/rest/v1/rpc/admin_reset_purchases", {method:"POST", body:"{}"});
     ORD = [];
     await tick();
     await loadStock();
