@@ -158,6 +158,24 @@ body.inchat .nav,body.inchat .top{display:none}
 .thr.unread .p{color:var(--tx)}
 .th .av{width:44px;height:44px}
 .msgs{height:calc(100vh - 330px);min-height:240px}
+
+/* ===== HAPP Admin refresh ===== */
+:root{
+  --bg:#070910;--panel:#101522;--panel2:#182237;--line:rgba(148,174,214,.18);
+  --tx:#f5f8ff;--mut:#9aa9c0;--a1:#ff304f;--a2:#754dff;--ok:#38e6a4;
+}
+html,body{background:#070910!important;color:var(--tx)}
+body{background:radial-gradient(ellipse at 0 0,rgba(255,48,79,.14),transparent 35%),radial-gradient(ellipse at 100% 0,rgba(0,184,255,.16),transparent 38%),#070910!important}
+header,.top,.nav,.bar{backdrop-filter:blur(14px)}
+.card,.panel,.box,.thr,.order,.chat,.stat,.item{border-color:var(--line)!important;border-radius:16px!important}
+button,.btn{border-radius:12px!important;transition:filter .15s ease,transform .15s ease}
+button:active,.btn:active{transform:scale(.985)}
+.btn,button.primary{background:linear-gradient(110deg,#ff304f,#754dff 58%,#087fe8)!important;color:white!important;border:0!important}
+input,textarea,select{background:#090f1c!important;color:#f5f8ff!important;border:1px solid #2a3851!important;border-radius:11px!important}
+input:focus,textarea:focus,select:focus{outline:none!important;border-color:#35baff!important;box-shadow:0 0 0 3px rgba(53,186,255,.12)}
+.hide{display:none!important}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #65cfff;outline-offset:3px}
+
 </style>
 </head>
 <body>
