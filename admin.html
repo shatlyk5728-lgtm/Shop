@@ -104,6 +104,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .thread:hover{transform:translateX(4px);border-color:var(--a1)}
 .thread.unread{background:rgba(39,224,122,.05);border-color:rgba(39,224,122,.3)}
 .thread-av{width:52px;height:52px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--a1),var(--a2));color:#02140a}
+.thread-av,.chat-av{overflow:hidden}
+.thread-av img,.chat-av img{width:100%;height:100%;object-fit:cover;display:block}
 .thread-av.vip{background:linear-gradient(135deg,var(--amb),#ff8c42)}
 .thread-body{flex:1;min-width:0}
 .thread-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
@@ -125,7 +127,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .msg.client{align-self:flex-start;background:var(--card-solid);border:1px solid var(--line);border-bottom-left-radius:4px}
 .msg small{display:block;font-size:10px;opacity:.6;margin-top:4px;text-align:right}
 .msg.sys{align-self:center;background:rgba(39,224,122,.1);border:1px solid rgba(39,224,122,.3);color:var(--a1);font-size:13px;max-width:92%;text-align:center}
-.msg img{display:block;max-width:100%;max-height:300px;border-radius:12px;margin-top:6px;cursor:zoom-in}
+.msg img{display:block;max-width:100%;height:auto;border-radius:12px;margin-top:6px;cursor:zoom-in}
 .day-divider{align-self:center;font-size:11px;color:var(--mut);padding:4px 12px;background:var(--glass);border-radius:99px;margin:8px 0}
 .reply-box{display:flex;gap:8px;margin-top:12px;align-items:center}
 .reply-box input{flex:1;padding:12px 16px;border:1px solid var(--glass-border);border-radius:99px;background:var(--glass);color:var(--tx);font:inherit;outline:none;transition:all .2s}
@@ -451,13 +453,30 @@ function logout() {
   toast("Вы вышли из системы", "error");
 }
 
+const isAva = b => (b||"").startsWith("[ava]");
+let PROF = {};
+function avNode(t, nm, big) {
+  const p = PROF[t];
+  if (p && p.path) {
+    const i = document.createElement("img");
+    i.src = SB + "/storage/v1/object/public/media/" + p.path; i.alt = ""; i.loading = "lazy";
+    i.onerror = () => { i.replaceWith(document.createTextNode(nm[0].toUpperCase())); };
+    return i;
+  }
+  return document.createTextNode(nm[0].toUpperCase());
+}
+
 async function tick() {
   if (!token) return;
   try {
-    const [o, m] = await Promise.all([
+    let [o, m] = await Promise.all([
       api("/rest/v1/orders?select=*&order=created_at.desc&limit=300"),
       api("/rest/v1/messages?select=id,thread,sender,body,created_at&order=id.desc&limit=1000")
     ]);
+    const prof = {};
+    m.forEach(r => { if (isAva(r.body) && !prof[r.thread]) { const p = r.body.slice(6).split("|"); prof[r.thread] = {path: p[0] || "", name: (p[1] || "").trim()}; } });
+    PROF = prof;
+    m = m.filter(r => !isAva(r.body));
     const newOrders = o.filter(r => norm(r.status)==="new" && !ORD.find(x => x.id===r.id));
     newOrders.forEach(no => addNotif("order", "Новый заказ", LABEL[no.plan] + " — " + no.contact));
     const mx = m.reduce((a,r) => r.sender!=="admin" && r.id>a ? r.id : a, 0);
@@ -662,7 +681,7 @@ function threadOrders(t) {
 }
 
 function threadOf(oid) { const m = MSG.find(r => isOrd(r.body) && ordId(r.body)===String(oid)); return m ? m.thread : null; }
-const tName = t => { const o = threadOrders(t)[0]; return o && o.contact ? String(o.contact) : "Покупатель "+t.slice(0,6); };
+const tName = t => { const p = PROF[t]; if (p && p.name) return p.name; const o = threadOrders(t)[0]; return o && o.contact ? String(o.contact) : "Покупатель "+t.slice(0,6); };
 const adminSend = (t, text) => api("/rest/v1/rpc/admin_reply", {method:"POST", body:JSON.stringify({p_thread:t, p_body:text})});
 
 async function approveAndNotify(o, t) {
@@ -693,7 +712,7 @@ function renderChats() {
     const nm = tName(tid);
     const hasVip = threadOrders(tid).some(o => o.plan && o.plan.startsWith("vip"));
     const c = el("div", "thread"+(v.unread?" unread":""));
-    c.appendChild(el("div", "thread-av"+(hasVip?" vip":""), nm[0].toUpperCase()));
+    const tav = el("div", "thread-av"+(hasVip?" vip":"")); tav.appendChild(avNode(tid, nm)); c.appendChild(tav);
     const body = el("div", "thread-body");
     const top = el("div", "thread-top");
     top.appendChild(el("div", "thread-name", nm));
@@ -726,7 +745,9 @@ function closeThread() {
 function renderThread() {
   const tid = curThread, os = threadOrders(tid), nm = tName(tid);
   $("#tTitle").textContent = nm;
-  $("#tAv").innerHTML = '<div style="width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,var(--a1),var(--a2));color:#02140a;font-weight:800;font-size:20px">'+nm[0].toUpperCase()+'</div>';
+  const tav = $("#tAv"); tav.innerHTML = "";
+  if (PROF[tid] && PROF[tid].path) { const w = el("div"); w.style.cssText = "width:100%;height:100%"; w.appendChild(avNode(tid, nm)); tav.appendChild(w); }
+  else { const w = el("div", "", nm[0].toUpperCase()); w.style.cssText = "width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,var(--a1),var(--a2));color:#02140a;font-weight:800;font-size:20px"; tav.appendChild(w); }
   $("#tSub").textContent = os.length ? (LABEL[os[0].plan]||os[0].plan) : "Онлайн";
   const po = $("#tOrders"); po.innerHTML = "";
   os.forEach(o => {

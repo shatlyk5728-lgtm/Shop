@@ -309,9 +309,12 @@ body::before{
 }
 .m small{display:block;margin-top:5px;text-align:right;color:rgba(2,20,10,.6);font-size:10px}
 .m .u{display:block;color:#0a5c2e;font-size:11px;font-weight:800;margin-bottom:3px}
-.m img,.m video{display:block;max-width:100%;max-height:320px;border-radius:10px;margin-top:7px}
+.m img,.m video{display:block;max-width:100%;height:auto;border-radius:10px;margin-top:7px}
 .m.ph{padding:4px}
-.m.ph img{margin:0;border-radius:14px;max-height:360px;cursor:zoom-in}
+.m.ph img{margin:0;border-radius:14px;cursor:zoom-in}
+.m.hasimg{max-width:94%}
+.avbtn{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;font-weight:700;color:var(--a1);margin-top:6px}
+.avbtn input{display:none}
 .m.ord{border:1px solid rgba(39,224,122,.5);background:rgba(39,224,122,.08)}
 .empty{margin:auto;text-align:center;color:var(--mut);font-size:13px;padding:24px}
 .err{color:var(--red);font-size:12px;margin:8px 0;overflow-wrap:anywhere}
@@ -677,28 +680,53 @@ function buy(plan) {
 
 function closeBuy() { $("#buybg").classList.remove("on"); }
 
+function getMyOrders() { try { return JSON.parse(localStorage.getItem("myOrders") || "[]"); } catch(e) { return []; } }
+function saveMyOrder(o) { const a = getMyOrders(); a.unshift(o); localStorage.setItem("myOrders", JSON.stringify(a.slice(0, 30))); }
+
+async function postMsg(text) {
+  const r = await fetch(SB + "/rest/v1/rpc/client_send", {
+    method: "POST",
+    headers: {apikey: KEY, "Content-Type": "application/json"},
+    body: JSON.stringify({p_uid: uid, p_body: text})
+  });
+  if (!r.ok) { let t = ""; try { t = await r.text(); } catch(e) {} throw new Error("Сообщение не отправлено" + (t ? " (" + t.slice(0, 120) + ")" : "")); }
+}
+
+async function createOrder(plan, contact) {
+  const H = {apikey: KEY, "Content-Type": "application/json"};
+  // 1) id создаём сами и не просим вернуть строку (не требует права SELECT)
+  const id = crypto.randomUUID();
+  let r = await fetch(SB + "/rest/v1/orders", {method: "POST", headers: {...H, Prefer: "return=minimal"}, body: JSON.stringify({id, plan, contact, status: "new"})});
+  if (r.ok) return id;
+  // 2) если id не uuid — пусть база сама назначит id и вернёт его
+  r = await fetch(SB + "/rest/v1/orders", {method: "POST", headers: {...H, Prefer: "return=representation"}, body: JSON.stringify({plan, contact, status: "new"})});
+  if (r.ok) {
+    const j = await r.json();
+    const row = Array.isArray(j) ? j[0] : j;
+    if (row && row.id != null) return String(row.id);
+  }
+  let t = ""; try { t = await r.text(); } catch(e) {}
+  throw new Error("Ошибка создания заказа" + (t ? ": " + t.slice(0, 140) : " (" + r.status + ")"));
+}
+
+let orderBusy = false;
 async function submitOrder(plan) {
+  if (orderBusy) return;
   const contact = $("#buyContact").value.trim();
   if (!contact) { $("#buyErr").textContent = "Введите контакт для связи"; return; }
   $("#buyErr").textContent = "";
-
+  orderBusy = true;
   try {
-    const r = await fetch(SB + "/rest/v1/orders", {
-      method: "POST",
-      headers: {apikey: KEY, "Content-Type": "application/json"},
-      body: JSON.stringify({plan, contact, status: "new"})
-    });
-    if (!r.ok) throw new Error("Ошибка создания заказа");
-    const order = await r.json();
-
-    await sendMsg(`[order]${order[0].id}|${plan}|${contact}`);
-
+    const id = await createOrder(plan, contact);
+    saveMyOrder({id, plan, contact, created_at: new Date().toISOString()});
+    await postMsg(`[order]${id}|${plan}|${contact}`);
     closeBuy();
     toast("Заказ создан! Откройте чат для оплаты 💬");
     openChat();
   } catch(e) {
     $("#buyErr").textContent = e.message;
   }
+  orderBusy = false;
 }
 
 // ===== CHAT =====
@@ -715,11 +743,7 @@ function closeChat() {
 async function sendMsg(text) {
   if (!text) return;
   try {
-    await fetch(SB + "/rest/v1/rpc/client_send", {
-      method: "POST",
-      headers: {apikey: KEY, "Content-Type": "application/json"},
-      body: JSON.stringify({p_uid: uid, p_body: text})
-    });
+    await postMsg(text);
     $("#chatInput").value = "";
     loadChatMsgs();
   } catch(e) { toast("Ошибка отправки"); }
@@ -745,6 +769,44 @@ $("#chatFile").addEventListener("change", async e => {
   $("#chatFile").value = "";
 });
 
+// ===== AVATAR / PROFILE DATA =====
+const pubUrl = p => SB + "/storage/v1/object/public/media/" + p;
+const getName = () => localStorage.getItem("uname") || "";
+const getAva = () => localStorage.getItem("uava") || "";
+
+async function syncProfile() {
+  // админ видит ваше имя и аву
+  try { await postMsg("[ava]" + getAva() + "|" + getName()); } catch(e) {}
+}
+
+async function uploadAva(f) {
+  if (!f) return;
+  if (!f.type.startsWith("image/")) { toast("Выберите фото"); return; }
+  try {
+    const ext = ((f.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg").slice(0, 5);
+    const path = "avatars/" + uid + "/" + crypto.randomUUID() + "." + ext;
+    // загружаем оригинал как есть, без сжатия и уменьшения
+    const r = await fetch(SB + "/storage/v1/object/media/" + path, {
+      method: "POST",
+      headers: {apikey: KEY, "Content-Type": f.type || "image/jpeg"},
+      body: f
+    });
+    if (!r.ok) throw new Error("Upload failed");
+    localStorage.setItem("uava", path);
+    await syncProfile();
+    toast("Аватар обновлён ✨");
+    loadProfile();
+  } catch(e) { toast("Ошибка загрузки аватара"); }
+}
+
+async function saveName() {
+  const v = ($("#unameInput").value || "").trim().slice(0, 30).replace(/\|/g, "");
+  localStorage.setItem("uname", v);
+  await syncProfile();
+  toast("Имя сохранено ✅");
+  loadProfile();
+}
+
 async function loadChatMsgs() {
   try {
     const r = await fetch(SB + "/rest/v1/messages?thread=eq." + uid + "&order=id.desc&limit=100", {
@@ -759,17 +821,19 @@ async function loadChatMsgs() {
 function renderChatMsgs() {
   const box = $("#chatMsgs");
   box.innerHTML = "";
-  if (!myMsgs.length) {
+  const vis = myMsgs.filter(m => !m.body.startsWith("[ava]"));
+  if (!vis.length) {
     box.innerHTML = '<div class="empty"><div style="font-size:40px;margin-bottom:10px">👋</div><div>Привет! Задайте вопрос или оформите заказ.</div></div>';
     return;
   }
-  myMsgs.forEach(m => {
+  vis.forEach(m => {
     const isMe = m.sender === "client";
     const b = el("div", "m " + (isMe ? "me" : ""));
     if (m.body.startsWith("[img]")) {
       const img = el("img");
       img.src = SB + "/storage/v1/object/public/media/" + m.body.slice(5);
       img.style.cursor = "zoom-in";
+      b.classList.add("hasimg");
       img.onclick = () => window.open(img.src);
       b.appendChild(img);
     } else if (m.body.startsWith("[order]")) {
@@ -804,21 +868,35 @@ async function loadChats() {
 // ===== PROFILE =====
 async function loadProfile() {
   const box = $("#profileBox");
-  try {
-    const r = await fetch(SB + "/rest/v1/orders?contact=eq." + uid + "&order=created_at.desc&limit=10", {
-      headers: {apikey: KEY}
-    });
-    myOrders = await r.json();
-  } catch(e) { myOrders = []; }
+  const local = getMyOrders();
+  myOrders = local.map(o => ({...o, status: "new"}));
+  if (local.length) {
+    try {
+      const ids = local.map(o => '"' + o.id + '"').join(",");
+      const r = await fetch(SB + "/rest/v1/orders?id=in.(" + encodeURIComponent(ids) + ")&select=id,plan,status,created_at&order=created_at.desc", {headers: {apikey: KEY}});
+      if (r.ok) {
+        const rows = await r.json();
+        const by = {}; rows.forEach(x => by[String(x.id)] = x);
+        myOrders = local.map(o => by[String(o.id)] ? {...o, ...by[String(o.id)]} : {...o, status: "new"});
+      }
+    } catch(e) {}
+  }
 
+  const name = getName() || "Покупатель";
+  const ava = getAva();
   box.innerHTML = `
     <div class="card">
       <div class="pf">
-        <div class="av2">👤</div>
-        <div>
-          <div style="font-weight:800;font-size:18px">Покупатель</div>
+        <div class="av2" id="avBox"></div>
+        <div style="min-width:0">
+          <div style="font-weight:800;font-size:18px" id="pfName"></div>
           <div style="font-size:12px;color:var(--mut)">ID: ${uid.slice(0,8)}...</div>
+          <label class="avbtn">📷 Сменить аву<input type="file" accept="image/*" id="avFile"></label>
         </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <input id="unameInput" maxlength="30" placeholder="Ваше имя" style="flex:1;min-width:0;padding:12px 14px;border:1.5px solid var(--glass-border);border-radius:14px;background:var(--glass);color:var(--tx);font:inherit">
+        <button class="btn" id="unameSave">Сохранить</button>
       </div>
       <div class="acts">
         <button class="btn ghost" onclick="openChat()">💬 Написать в поддержку</button>
@@ -829,13 +907,26 @@ async function loadProfile() {
       <div id="ordersList">${myOrders.length ? "" : '<p style="color:var(--mut);text-align:center;padding:20px">Заказов пока нет</p>'}</div>
     </div>
   `;
+  $("#pfName").textContent = name;
+  $("#unameInput").value = getName();
+  const avBox = $("#avBox");
+  if (ava) { const im = el("img"); im.src = pubUrl(ava); im.alt = ""; avBox.appendChild(im); }
+  else avBox.textContent = (name[0] || "👤").toUpperCase();
+  $("#avFile").onchange = e => { uploadAva(e.target.files[0]); e.target.value = ""; };
+  $("#unameSave").onclick = saveName;
 
   const ol = $("#ordersList");
   myOrders.forEach(o => {
     const st = o.status === "paid" ? "✅ Оплачен" : o.status === "cancelled" ? "❌ Отменён" : "⏳ Ожидает";
     const d = el("div", "");
     d.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)";
-    d.innerHTML = `<div><div style="font-weight:700">${PLANS[o.plan]?.name || o.plan}</div><div style="font-size:12px;color:var(--mut)">${new Date(o.created_at).toLocaleDateString("ru")}</div></div><div style="font-weight:700;color:${o.status==="paid"?"var(--a1)":o.status==="cancelled"?"var(--red)":"var(--amb)"}">${st}</div>`;
+    const l = el("div", ""); 
+    l.appendChild(el("div", "", PLANS[o.plan]?.name || o.plan)); l.firstChild.style.fontWeight = "700";
+    const dt = el("div", "", new Date(o.created_at).toLocaleDateString("ru")); dt.style.cssText = "font-size:12px;color:var(--mut)";
+    l.appendChild(dt);
+    const sd = el("div", "", st);
+    sd.style.cssText = "font-weight:700;color:" + (o.status === "paid" ? "var(--a1)" : o.status === "cancelled" ? "var(--red)" : "var(--amb)");
+    d.append(l, sd);
     ol.appendChild(d);
   });
 }
