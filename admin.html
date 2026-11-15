@@ -1182,7 +1182,9 @@ const reg = (cat, name, desc, fn) => F.push({ cat, name, desc, fn });
 function hxToast(msg, kind, ms) {
   let box = q("#hxToast");
   if (!box) { box = mk("div"); box.id = "hxToast"; document.body.appendChild(box); }
-  const t = mk("div", "t" + (kind ? " " + kind : ""), String(msg));
+  let txt = String(msg);
+  if (IS_USER) txt = txt.replace(/\s*\/\/\s*/g, " · ").replace(/·\s*·/g, "·");
+  const t = mk("div", "t" + (kind ? " " + kind : ""), txt);
   try { STATS.toasts++; } catch (e) {}
   box.appendChild(t);
   setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateY(-8px)"; t.style.transition = ".2s"; setTimeout(() => t.remove(), 240); }, ms || 2300);
@@ -2763,13 +2765,17 @@ function initHx() {
   injectVpnArt();
   injectAdminArt();
   initIdentity();
-  updateHud();
+  if (IS_ADMIN) {
+    updateHud();
+    if (cfg.fps) fpsLoop();
+    if (cfg.matrix) startMatrix();
+  }
   charCounterOn();
-  if (cfg.fps) fpsLoop();
-  if (cfg.matrix) startMatrix();
-  try {
-    if (!sessionStorage.getItem("hxBooted")) { showBoot(); sessionStorage.setItem("hxBooted", "1"); }
-  } catch (e) { showBoot(); }
+  if (IS_ADMIN) {
+    try {
+      if (!sessionStorage.getItem("hxBooted")) { showBoot(); sessionStorage.setItem("hxBooted", "1"); }
+    } catch (e) { showBoot(); }
+  }
 
   const refreshSoon = debounce(() => refreshAvatars(), 300);
   if (IS_USER) { const g = q("#gM"); if (g) new MutationObserver(refreshSoon).observe(g, { childList: true, subtree: true }); }
